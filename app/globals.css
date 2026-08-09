@@ -1,0 +1,404 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ---------------------------------------------------------------------------
+   OMOMOOM DESIGN SYSTEM
+   ---------------------------------------------------------------------------
+   Derived from the existing Base44 brand, rebuilt as a restrained system.
+
+   What changed and why:
+   - Two typefaces, not six. Inter Tight for display, Inter for text.
+   - Borders are soft warm grey. Base44 used near-black hairlines everywhere,
+     which is the single biggest cause of the busy, heavy feel.
+   - Pink is reserved for actions and brand moments. It is an accent, never a
+     surface. Charcoal carries the interface.
+   - Warm neutrals rather than pure white/grey. Food reads better on warm paper.
+
+   Only use tokens below, never a raw hex in a component. That is what keeps
+   the design consistent across every page.
+--------------------------------------------------------------------------- */
+
+@theme inline {
+  /* Typography */
+  --font-sans: var(--font-inter);
+  --font-heading: var(--font-inter-tight);
+  --font-mono: var(--font-geist-mono);
+
+  /* Core surfaces */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  /* A second surface for alternating page sections */
+  --color-surface: var(--surface);
+  --color-surface-foreground: var(--surface-foreground);
+
+  /* Interface colours */
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  /* Brand, the Omomoom pink. Actions and highlights only. */
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
+  --color-brand-subtle: var(--brand-subtle);
+
+  /* Supporting accent for editorial moments (guides, badges) */
+  --color-terracotta: var(--terracotta);
+  --color-terracotta-subtle: var(--terracotta-subtle);
+
+  /* Lines and focus */
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Radii, one scale, derived from a single value */
+  --radius-sm: calc(var(--radius) * 0.5);
+  --radius-md: calc(var(--radius) * 0.75);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.5);
+  --radius-2xl: calc(var(--radius) * 2);
+  --radius-3xl: calc(var(--radius) * 3);
+
+  /* Shadows, soft and warm, never grey-black */
+  --shadow-card: 0 1px 2px rgb(28 22 16 / 0.04), 0 4px 16px rgb(28 22 16 / 0.05);
+  --shadow-card-hover:
+    0 2px 4px rgb(28 22 16 / 0.05), 0 12px 32px rgb(28 22 16 / 0.09);
+  --shadow-header: 0 1px 0 var(--border);
+
+  /* Motion */
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /**
+   * For panels that travel a long way: drawers, sheets, anything crossing most
+   * of the screen.
+   *
+   * `--ease-out-soft` is a quintic ease-out. It is right for a button or a
+   * hover, where the distance is small, but over 384px it spends 87% of the
+   * travel in the first fifth of the duration and then creeps the remainder.
+   * The eye reads that as an instant pop followed by a settle, not as a slide.
+   * This curve keeps a real velocity through the middle of the movement.
+   */
+  --ease-sheet: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* --------------------------------------------------------------------------
+   Light theme
+-------------------------------------------------------------------------- */
+:root {
+  --radius: 0.75rem;
+
+  /* Warm paper, not clinical white */
+  --background: #fdfbf7;
+  --foreground: #1a1a1a;
+
+  --card: #ffffff;
+  --card-foreground: #1a1a1a;
+  --popover: #ffffff;
+  --popover-foreground: #1a1a1a;
+
+  --surface: #f7f3ec;
+  --surface-foreground: #1a1a1a;
+
+  /* Charcoal carries the UI */
+  --primary: #1a1a1a;
+  --primary-foreground: #fdfbf7;
+
+  --secondary: #f2ece2;
+  --secondary-foreground: #1a1a1a;
+
+  --muted: #f5f0e8;
+  --muted-foreground: #6f6862;
+
+  --accent: #f2ece2;
+  --accent-foreground: #1a1a1a;
+
+  --destructive: #c2371f;
+  --destructive-foreground: #ffffff;
+
+  /* Brand */
+  --brand: #e8336b;
+  --brand-foreground: #ffffff;
+  --brand-subtle: #fdeaf1;
+
+  --terracotta: #a23b2e;
+  --terracotta-subtle: #f7ece9;
+
+  /* Soft warm hairlines, the main departure from Base44 */
+  --border: #e9e1d5;
+  --border-strong: #d9cfc0;
+  --input: #e9e1d5;
+  --ring: #e8336b;
+}
+
+/* --------------------------------------------------------------------------
+   Dark theme
+-------------------------------------------------------------------------- */
+.dark {
+  --background: #121110;
+  --foreground: #f5f2ed;
+
+  --card: #1b1a18;
+  --card-foreground: #f5f2ed;
+  --popover: #1b1a18;
+  --popover-foreground: #f5f2ed;
+
+  --surface: #1b1a18;
+  --surface-foreground: #f5f2ed;
+
+  --primary: #f5f2ed;
+  --primary-foreground: #1a1a1a;
+
+  --secondary: #262421;
+  --secondary-foreground: #f5f2ed;
+
+  --muted: #262421;
+  --muted-foreground: #a49d94;
+
+  --accent: #262421;
+  --accent-foreground: #f5f2ed;
+
+  --destructive: #e5573d;
+  --destructive-foreground: #ffffff;
+
+  /* Lifted for contrast against a dark surface */
+  --brand: #ff5c8a;
+  --brand-foreground: #1a1a1a;
+  --brand-subtle: #2c1a21;
+
+  --terracotta: #d4705f;
+  --terracotta-subtle: #2a1e1b;
+
+  --border: #2e2b27;
+  --border-strong: #3d3934;
+  --input: #2e2b27;
+  --ring: #ff5c8a;
+}
+
+/* --------------------------------------------------------------------------
+   Base layer
+-------------------------------------------------------------------------- */
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    @apply font-sans antialiased;
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Headings use the display face and tighter tracking at large sizes */
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-heading text-balance;
+    letter-spacing: -0.02em;
+  }
+
+  /* A single visible focus treatment everywhere, for keyboard users only */
+  :focus-visible {
+    @apply outline-ring outline-2 outline-offset-2;
+  }
+
+  /* The header is sticky, so anything jumped to by anchor must clear it or the
+     heading lands underneath. Matches header height plus breathing room. */
+  [id] {
+    scroll-margin-top: 6rem;
+  }
+
+  /* Long-form paragraphs read better with a max measure */
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: var(--brand);
+    color: var(--brand-foreground);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Utilities
+-------------------------------------------------------------------------- */
+@utility container-page {
+  /* One horizontal rhythm for the entire site. Never re-invent per section. */
+  margin-inline: auto;
+  width: 100%;
+  max-width: 80rem;
+  padding-inline: 1rem;
+
+  @media (width >= 40rem) {
+    padding-inline: 1.5rem;
+  }
+
+  @media (width >= 64rem) {
+    padding-inline: 2rem;
+  }
+}
+
+@utility scrollbar-none {
+  /* Horizontal chip rows scroll on mobile; the scrollbar itself is noise. */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@utility section-y {
+  /* One vertical rhythm for the entire site. */
+  padding-block: 3.5rem;
+
+  @media (width >= 48rem) {
+    padding-block: 5rem;
+  }
+
+  @media (width >= 64rem) {
+    padding-block: 6rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Sheet motion
+   --------------------------------------------------------------------------
+   Dedicated keyframes for the filter drawer, rather than tw-animate-css's
+   generic `enter`/`exit`.
+
+   Those two animate `filter: blur()` and read every value out of CSS custom
+   properties. Chromium can composite neither, so the whole slide runs on the
+   main thread, in the same frames React is mounting the drawer's contents and
+   Radix is installing its focus trap and scroll lock. Measured, that produced
+   seven painted frames across a 450ms animation, which is why it read as a pop
+   rather than a slide.
+
+   These animate one property, transform, between two literal values. That is
+   the shape Chromium hands to the compositor, so the movement keeps a steady
+   frame rate no matter how busy the main thread is.
+-------------------------------------------------------------------------- */
+@keyframes sheet-in-right {
+  from {
+    transform: translate3d(100%, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes sheet-out-right {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(100%, 0, 0);
+  }
+}
+
+@keyframes sheet-in-left {
+  from {
+    transform: translate3d(-100%, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes sheet-out-left {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-100%, 0, 0);
+  }
+}
+
+@keyframes sheet-in-top {
+  from {
+    transform: translate3d(0, -100%, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes sheet-out-top {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(0, -100%, 0);
+  }
+}
+
+@keyframes sheet-in-bottom {
+  from {
+    transform: translate3d(0, 100%, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes sheet-out-bottom {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 100%, 0);
+  }
+}
+
+/* Opacity alone, for the same reason. */
+@keyframes scrim-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scrim-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
