@@ -28,7 +28,8 @@ export function SearchField() {
       <form
         onSubmit={onSubmit}
         role="search"
-        className="border-border-strong/50 focus-within:border-brand flex items-center gap-2 rounded-xl border py-2 pr-2 pl-4 transition-colors"
+        aria-label="Describe what you are craving"
+        className="border-border-strong/50 focus-within:border-brand-ink flex items-center gap-2 rounded-xl border py-2 pr-2 pl-4 transition-colors"
       >
         <label htmlFor="craving" className="sr-only">
           Describe what you are looking for
@@ -46,7 +47,7 @@ export function SearchField() {
           type="submit"
           size="sm"
           disabled={aiBusy || value.trim().length < 2}
-          className="bg-brand text-brand-foreground hover:bg-brand/90 shrink-0 rounded-lg"
+          className="bg-brand-ink text-brand-ink-foreground hover:bg-brand-ink/90 h-9 shrink-0 rounded-lg px-3"
         >
           {aiBusy ? (
             <Loader2 className="size-3.5 animate-spin" aria-hidden="true" />
@@ -63,7 +64,7 @@ export function SearchField() {
           aria-live="polite"
         >
           <Sparkles
-            className="text-brand mt-0.5 size-3 shrink-0"
+            className="text-brand-ink mt-0.5 size-3 shrink-0"
             aria-hidden="true"
           />
           {aiNote}

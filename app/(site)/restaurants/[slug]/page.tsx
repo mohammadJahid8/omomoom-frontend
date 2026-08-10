@@ -160,8 +160,8 @@ export default async function RestaurantPage({ params }: PageProps) {
 
       <div className="container-page section-y">
         <Link
-          href="/"
-          className="text-muted-foreground hover:text-brand inline-flex items-center gap-2 text-sm font-medium transition-colors"
+          href="/restaurants"
+          className="text-muted-foreground hover:text-brand-ink inline-flex items-center gap-2 text-sm font-medium transition-colors"
         >
           <ArrowLeft className="size-4" aria-hidden="true" />
           Back to restaurants
@@ -195,7 +195,7 @@ export default async function RestaurantPage({ params }: PageProps) {
                     {dishes.map((dish) => (
                       <li
                         key={dish}
-                        className="bg-brand-subtle text-brand rounded-full px-4 py-2 text-sm font-semibold"
+                        className="bg-brand-subtle text-brand-ink rounded-full px-4 py-2 text-sm font-semibold"
                       >
                         {dish}
                       </li>

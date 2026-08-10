@@ -15,15 +15,12 @@ type RestaurantGridProps = {
 
   initial: RestaurantCardData[];
   meta: ApiMeta;
-
-  ranked: boolean;
 };
 
 export function RestaurantGrid({
   filters,
   initial,
   meta,
-  ranked,
 }: RestaurantGridProps) {
   const { isPending } = useFilterState();
 
@@ -68,7 +65,7 @@ export function RestaurantGrid({
 
   return (
     <>
-      <RestaurantCardGrid restaurants={restaurants} ranked={ranked} />
+      <RestaurantCardGrid restaurants={restaurants} />
 
       {hasMore ? (
         <div className="mt-10 flex flex-col items-center gap-3">
@@ -77,7 +74,7 @@ export function RestaurantGrid({
             variant="outline"
             onClick={loadMore}
             disabled={loading || isPending}
-            className="rounded-full"
+            className="h-11 rounded-full px-6"
           >
             {loading ? (
               <Loader2 className="size-4 animate-spin" aria-hidden="true" />

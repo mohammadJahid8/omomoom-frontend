@@ -46,7 +46,7 @@ export function RestaurantTags({ tags }: { tags: TagGroups }) {
                   <Link
                     key={tag.slug}
                     href={`/restaurants?${filterKey}=${tag.slug}`}
-                    className="border-border-strong/50 hover:border-brand hover:bg-brand-subtle hover:text-brand inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium transition-colors"
+                    className="border-border-strong/50 hover:border-brand-ink hover:bg-brand-subtle hover:text-brand-ink inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium transition-colors"
                   >
                     {content}
                   </Link>

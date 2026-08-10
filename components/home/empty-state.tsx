@@ -17,7 +17,7 @@ export function EmptyState() {
       </p>
       <Button
         onClick={clear}
-        className="bg-brand text-brand-foreground hover:bg-brand/90 mt-6 rounded-full"
+        className="bg-brand-ink text-brand-ink-foreground hover:bg-brand-ink/90 mt-6 h-11 rounded-full px-6"
       >
         Clear all filters
       </Button>

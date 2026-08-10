@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Search } from "lucide-react";
 
+import { UserMenu } from "@/components/auth/user-menu";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import { SiteLogo } from "@/components/layout/site-logo";
 import { Button } from "@/components/ui/button";
@@ -77,23 +78,12 @@ export function SiteHeader() {
             </Link>
           </Button>
 
-          <Button
-            asChild
-            variant="outline"
-            size="sm"
-            className={cn(
-              "hidden rounded-full sm:inline-flex",
-              transparent &&
-                "border-white/35 bg-white/10 text-white backdrop-blur-sm hover:bg-white/20 hover:text-white",
-            )}
-          >
-            <Link href="/login">Log in</Link>
-          </Button>
+          <UserMenu onDark={transparent} />
 
           <Button
             asChild
             size="sm"
-            className="bg-brand text-brand-foreground hover:bg-brand/90 hidden rounded-full sm:inline-flex"
+            className="bg-brand-ink text-brand-ink-foreground hover:bg-brand-ink/90 hidden rounded-full sm:inline-flex"
           >
             <Link href="/claim">Add your restaurant</Link>
           </Button>

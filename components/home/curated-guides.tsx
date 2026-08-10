@@ -31,9 +31,6 @@ export function CuratedGuides() {
                   sizes="(min-width: 768px) 33vw, 100vw"
                   className="object-cover transition-transform duration-500 ease-out-soft group-hover:scale-[1.04]"
                 />
-                <span className="bg-background/90 text-foreground absolute top-3 left-3 rounded-full px-2.5 py-1 text-[11px] font-semibold backdrop-blur-sm">
-                  {guide.restaurantCount} spots
-                </span>
               </div>
 
               <div className="flex flex-1 flex-col p-5">
@@ -48,7 +45,7 @@ export function CuratedGuides() {
                 <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
                   {guide.description}
                 </p>
-                <span className="text-brand mt-4 inline-flex items-center gap-1.5 text-sm font-semibold">
+                <span className="text-brand-ink mt-4 inline-flex items-center gap-1.5 text-sm font-semibold">
                   Read the guide
                   <ArrowRight
                     className="size-4 transition-transform group-hover:translate-x-0.5"

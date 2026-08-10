@@ -2,7 +2,7 @@ export const siteConfig = {
   name: "Omomoom",
   tagline: "Discovery your next yummy bite",
   description:
-    "The most powerful restaurant filter in Miami. Search 1,000+ spots by cuisine, neighborhood, price, vibe and dietary needs, ranked by real reviews and never by paid placement.",
+    "The most powerful restaurant filter in Miami. Search by cuisine, neighborhood, price, dish, occasion and dietary needs. Nobody pays to appear here.",
   url: "https://omomoom.com",
   city: "Miami",
   links: {

@@ -56,15 +56,50 @@
   --color-brand-foreground: var(--brand-foreground);
   --color-brand-subtle: var(--brand-subtle);
 
+  /* The same pink, darkened until it passes AA. Use for pink text at body
+     size and for filled controls. `--brand` is display sizes and decoration,
+     where it already passes. */
+  --color-brand-ink: var(--brand-ink);
+  --color-brand-ink-foreground: var(--brand-ink-foreground);
+
+  /* Regions that ignore the theme because what sits behind them is fixed:
+     content over photography, and the inverted panels. */
+  --color-media-surface: var(--media-surface);
+  --color-media-foreground: var(--media-foreground);
+  --color-media-muted: var(--media-muted);
+  --color-brand-on-dark: var(--brand-on-dark);
+
   /* Supporting accent for editorial moments (guides, badges) */
   --color-terracotta: var(--terracotta);
   --color-terracotta-subtle: var(--terracotta-subtle);
+
+  /* Warm tints so repeated tiles read as four different things rather than
+     four copies of the same one. Each pairs a wash with ink that passes on it. */
+  --color-tint-rose: var(--tint-rose);
+  --color-tint-rose-ink: var(--tint-rose-ink);
+  --color-tint-gold: var(--tint-gold);
+  --color-tint-gold-ink: var(--tint-gold-ink);
+  --color-tint-olive: var(--tint-olive);
+  --color-tint-olive-ink: var(--tint-olive-ink);
+  --color-tint-clay: var(--tint-clay);
+  --color-tint-clay-ink: var(--tint-clay-ink);
 
   /* Lines and focus */
   --color-border: var(--border);
   --color-border-strong: var(--border-strong);
   --color-input: var(--input);
   --color-ring: var(--ring);
+
+  /* Dashboard chrome. Its own surface so the sidebar can sit a shade apart
+     from the page without either becoming a new colour. */
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
 
   /* Radii, one scale, derived from a single value */
   --radius-sm: calc(var(--radius) * 0.5);
@@ -135,14 +170,40 @@
   --brand-foreground: #ffffff;
   --brand-subtle: #fdeaf1;
 
+  --brand-ink: #d31852;
+  --brand-ink-foreground: #ffffff;
+
+  --media-surface: #ffffff;
+  --media-foreground: #1a1a1a;
+  --media-muted: #6f6862;
+  --brand-on-dark: #ff5c8a;
+
   --terracotta: #a23b2e;
   --terracotta-subtle: #f7ece9;
+
+  --tint-rose: #fdeaf1;
+  --tint-rose-ink: #c2185b;
+  --tint-gold: #fbf0da;
+  --tint-gold-ink: #92671a;
+  --tint-olive: #ecf2e6;
+  --tint-olive-ink: #4d6b3e;
+  --tint-clay: #f9ece7;
+  --tint-clay-ink: #a34b31;
 
   /* Soft warm hairlines, the main departure from Base44 */
   --border: #e9e1d5;
   --border-strong: #d9cfc0;
   --input: #e9e1d5;
   --ring: #e8336b;
+
+  --sidebar: #f7f3ec;
+  --sidebar-foreground: #1a1a1a;
+  --sidebar-primary: #1a1a1a;
+  --sidebar-primary-foreground: #fdfbf7;
+  --sidebar-accent: #ece4d7;
+  --sidebar-accent-foreground: #1a1a1a;
+  --sidebar-border: #e2d9c9;
+  --sidebar-ring: #e8336b;
 }
 
 /* --------------------------------------------------------------------------
@@ -180,13 +241,41 @@
   --brand-foreground: #1a1a1a;
   --brand-subtle: #2c1a21;
 
+  /* Already lifted, so the ink and the brand converge here */
+  --brand-ink: #ff5c8a;
+  --brand-ink-foreground: #1a1a1a;
+
+  /* Unchanged: a photo is dark in either theme */
+  --media-surface: #ffffff;
+  --media-foreground: #1a1a1a;
+  --media-muted: #6f6862;
+  --brand-on-dark: #ff5c8a;
+
   --terracotta: #d4705f;
   --terracotta-subtle: #2a1e1b;
+
+  --tint-rose: #2c1a21;
+  --tint-rose-ink: #ff8fb0;
+  --tint-gold: #2a2317;
+  --tint-gold-ink: #e0b365;
+  --tint-olive: #1f261c;
+  --tint-olive-ink: #a3c48f;
+  --tint-clay: #2a1e1b;
+  --tint-clay-ink: #e5977f;
 
   --border: #2e2b27;
   --border-strong: #3d3934;
   --input: #2e2b27;
   --ring: #ff5c8a;
+
+  --sidebar: #1b1a18;
+  --sidebar-foreground: #f5f2ed;
+  --sidebar-primary: #f5f2ed;
+  --sidebar-primary-foreground: #1a1a1a;
+  --sidebar-accent: #262421;
+  --sidebar-accent-foreground: #f5f2ed;
+  --sidebar-border: #2e2b27;
+  --sidebar-ring: #ff5c8a;
 }
 
 /* --------------------------------------------------------------------------

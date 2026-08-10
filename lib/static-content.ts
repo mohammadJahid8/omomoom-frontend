@@ -48,7 +48,6 @@ export const GUIDES = [
     title: "The best sushi in Miami",
     description:
       "From eight seat omakase counters to the neighborhood spot worth the drive.",
-    restaurantCount: 14,
     imageUrl: photo("photo-1579871494447-9811cf80d66c", 900),
   },
   {
@@ -56,7 +55,6 @@ export const GUIDES = [
     title: "Hidden gems in Wynwood",
     description:
       "The places locals keep quiet about, tucked behind the murals and the crowds.",
-    restaurantCount: 11,
     imageUrl: photo("photo-1533106497176-45ae19e68ba2", 900),
   },
   {
@@ -64,7 +62,6 @@ export const GUIDES = [
     title: "Where to brunch in Brickell",
     description:
       "Long tables, good coffee, and somewhere you can actually hear each other.",
-    restaurantCount: 9,
     imageUrl: photo("photo-1533089860892-a7c6f0a88666", 900),
   },
 ] as const;

@@ -59,7 +59,7 @@ export function RestaurantHeader({
           <Segment>
             <Link
               href={`/restaurants?area=${neighborhoodSlug}`}
-              className="hover:text-brand inline-flex items-center gap-1.5 transition-colors"
+              className="hover:text-brand-ink inline-flex items-center gap-1.5 transition-colors"
             >
               <MapPin className="size-4 shrink-0" aria-hidden="true" />
               {neighborhood}

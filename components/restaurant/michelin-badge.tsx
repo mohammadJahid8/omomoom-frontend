@@ -30,7 +30,7 @@ export function MichelinBadge({ rating, className }: MichelinBadgeProps) {
       className={cn(
         "rounded-full px-2.5 py-1 text-[11px] font-semibold backdrop-blur-sm",
         IS_STARRED[rating]
-          ? "bg-brand text-brand-foreground"
+          ? "bg-brand-ink text-brand-ink-foreground"
           : "bg-background/90 text-foreground",
         className,
       )}

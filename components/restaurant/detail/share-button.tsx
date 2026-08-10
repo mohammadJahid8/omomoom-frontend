@@ -46,10 +46,10 @@ export function ShareButton({ name, summary }: ShareButtonProps) {
       size="lg"
       variant="outline"
       onClick={onShare}
-      className="rounded-full"
+      className="h-11 rounded-full px-5"
     >
       {copied ? (
-        <Check className="text-brand size-4" aria-hidden="true" />
+        <Check className="text-brand-ink size-4" aria-hidden="true" />
       ) : (
         <Share2 className="size-4" aria-hidden="true" />
       )}

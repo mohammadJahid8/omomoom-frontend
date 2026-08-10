@@ -19,6 +19,21 @@ const TYPE_MS = 55;
 const DELETE_MS = 25;
 const HOLD_MS = 1800;
 
+function usePrefersReducedMotion(): boolean {
+  const [reduced, setReduced] = useState(false);
+
+  useEffect(() => {
+    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReduced(query.matches);
+
+    update();
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, []);
+
+  return reduced;
+}
+
 function useTypedPlaceholder(active: boolean): string {
   const [text, setText] = useState("");
   const [index, setIndex] = useState(0);
@@ -59,8 +74,11 @@ export function HeroSearch() {
   const { ask, aiBusy } = useFilterState();
   const [value, setValue] = useState("");
   const [focused, setFocused] = useState(false);
+  const reducedMotion = usePrefersReducedMotion();
 
-  const typed = useTypedPlaceholder(!focused && value === "" && !aiBusy);
+  const typed = useTypedPlaceholder(
+    !focused && value === "" && !aiBusy && !reducedMotion,
+  );
 
   const onSubmit = (event: FormEvent) => {
     event.preventDefault();
@@ -71,9 +89,13 @@ export function HeroSearch() {
     <form
       onSubmit={onSubmit}
       role="search"
-      className="focus-within:ring-brand/60 flex w-full items-center gap-3 rounded-full bg-white py-1.5 pr-1.5 pl-5 shadow-lg transition focus-within:ring-2 sm:max-w-xl"
+      aria-label="Search restaurants"
+      className="bg-media-surface focus-within:ring-brand/60 flex w-full items-center gap-3 rounded-full py-1.5 pr-1.5 pl-5 shadow-lg transition focus-within:ring-2 sm:max-w-xl"
     >
-      <Search className="size-5 shrink-0 text-neutral-400" aria-hidden="true" />
+      <Search
+        className="text-media-muted size-5 shrink-0"
+        aria-hidden="true"
+      />
 
       <label htmlFor="hero-search" className="sr-only">
         Search restaurants, dishes, cuisines and neighborhoods
@@ -86,14 +108,14 @@ export function HeroSearch() {
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
         placeholder={typed ? `${typed}|` : STATIC_PLACEHOLDER}
-        className="min-w-0 flex-1 bg-transparent py-3 text-base text-neutral-900 outline-none placeholder:text-neutral-400"
+        className="text-media-foreground placeholder:text-media-muted min-w-0 flex-1 bg-transparent py-3 text-base outline-none"
       />
 
       <button
         type="submit"
         aria-label="Search"
         disabled={aiBusy || value.trim().length < 2}
-        className="bg-brand text-brand-foreground hover:bg-brand/90 inline-flex size-11 shrink-0 items-center justify-center rounded-full text-sm font-semibold transition-colors disabled:opacity-60 sm:w-auto sm:px-6"
+        className="bg-brand-ink text-brand-ink-foreground hover:bg-brand-ink/90 inline-flex size-11 shrink-0 items-center justify-center rounded-full text-sm font-semibold transition-colors disabled:opacity-60 sm:w-auto sm:px-6"
       >
         {aiBusy ? (
           <Loader2 className="size-4.5 animate-spin" aria-hidden="true" />

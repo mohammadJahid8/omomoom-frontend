@@ -11,8 +11,8 @@ export function RestaurantReviews({ name }: { name: string }) {
       <div className="border-border-strong/60 mt-5 rounded-2xl border border-dashed px-6 py-12 text-center">
         <p className="font-heading text-base font-bold">No reviews yet</p>
         <p className="text-muted-foreground mx-auto mt-2 max-w-sm text-sm leading-relaxed">
-          Nobody has written about {name} on Omomoom. Reviews open up shortly,
-          and the first people in get a Founding Foodie badge.
+          Reviews are not open on Omomoom yet. When they are, this is where
+          diners will tell you whether {name} lives up to the photos.
         </p>
         <Button disabled variant="outline" className="mt-6 rounded-full">
           <PenLine className="size-4" aria-hidden="true" />
@@ -34,7 +34,7 @@ export function OwnerCta({
     <section className={cn("bg-surface rounded-2xl border p-6", className)}>
       <div className="flex gap-3.5">
         <Store
-          className="text-brand mt-0.5 size-5 shrink-0"
+          className="text-brand-ink mt-0.5 size-5 shrink-0"
           aria-hidden="true"
         />
         <div>
@@ -42,13 +42,13 @@ export function OwnerCta({
             Do you own {name}?
           </h2>
           <p className="text-muted-foreground mt-1.5 text-sm leading-relaxed">
-            Claim the listing to correct the details, add photos and reply to
-            reviews. Claiming is free.
+            Claiming lets you correct the details, add photos and tell the story
+            behind the kitchen. It opens shortly.
           </p>
           <Button
             disabled
             size="sm"
-            className="bg-brand text-brand-foreground hover:bg-brand/90 mt-4 rounded-full"
+            className="bg-brand-ink text-brand-ink-foreground hover:bg-brand-ink/90 mt-4 rounded-full"
           >
             Claim this restaurant
           </Button>

@@ -67,8 +67,8 @@ export default function OpengraphImage() {
             maxWidth: 900,
           }}
         >
-          The most powerful restaurant filter in Miami. 1,000+ spots by cuisine,
-          neighborhood, price and vibe.
+          The most powerful restaurant filter in Miami. By cuisine, neighborhood,
+          price, dish, occasion and dietary needs.
         </span>
       </div>
 

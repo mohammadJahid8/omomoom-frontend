@@ -128,7 +128,7 @@ async function Listing({ filters }: { filters: Filters }) {
 
       <div className="container-page">
         <header className="max-w-3xl">
-          <p className="text-brand text-xs font-semibold tracking-[0.16em] uppercase">
+          <p className="text-brand-ink text-xs font-semibold tracking-[0.16em] uppercase">
             The directory
           </p>
           <h1 className="font-heading mt-3 text-3xl font-extrabold sm:text-4xl lg:text-5xl">
@@ -138,9 +138,9 @@ async function Listing({ filters }: { filters: Filters }) {
           </h1>
           <p className="text-muted-foreground mt-4 text-base leading-relaxed">
             {meta.total.toLocaleString()}{" "}
-            {meta.total === 1 ? "place" : "places"}, ranked by real reviews and
-            never by paid placement. Filter by cuisine, neighborhood, price,
-            occasion and dietary needs.
+            {meta.total === 1 ? "place" : "places"}, and nobody pays to appear
+            here. Filter by cuisine, neighborhood, price, dish, occasion and
+            dietary needs.
           </p>
         </header>
 
@@ -148,7 +148,7 @@ async function Listing({ filters }: { filters: Filters }) {
           <FilterPanel facets={facets} total={meta.total} />
         </div>
 
-        <div id={RESULTS_ID} className="mt-14 scroll-mt-24 lg:mt-16">
+        <div id={RESULTS_ID} className="mt-14 lg:mt-16">
           <div className="mb-8 flex flex-wrap items-end justify-between gap-3">
             <h2 className="font-heading text-2xl font-bold sm:text-3xl">
               {activeCount > 0 ? "Matching restaurants" : "All restaurants"}

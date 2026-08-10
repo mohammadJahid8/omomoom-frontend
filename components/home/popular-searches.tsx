@@ -6,7 +6,7 @@ import { useFilterState } from "@/components/filters/filter-state";
 import { POPULAR_SEARCHES } from "@/lib/static-content";
 import { toSearchParams } from "@/lib/filters";
 
-export function PopularSearches() {
+export function PopularSearches({ labelledBy }: { labelledBy?: string }) {
   const { apply } = useFilterState();
 
   const onClick = (
@@ -27,7 +27,7 @@ export function PopularSearches() {
   };
 
   return (
-    <ul className="flex flex-wrap gap-2">
+    <ul className="flex flex-wrap gap-2" aria-labelledby={labelledBy}>
       {POPULAR_SEARCHES.map((entry) => {
         const query = toSearchParams(
           entry.dish ? { dish: [entry.dish] } : { q: entry.q ?? "" },
@@ -38,7 +38,7 @@ export function PopularSearches() {
             <a
               href={`/?${query}`}
               onClick={(event) => onClick(event, entry)}
-              className="hover:border-brand hover:bg-brand inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-white/10 px-3.5 py-1.5 text-sm font-medium text-white backdrop-blur-sm transition-colors"
+              className="hover:border-brand-ink hover:bg-brand-ink inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-white/10 px-3.5 py-1.5 text-sm font-medium text-white backdrop-blur-sm transition-colors"
             >
               <span aria-hidden="true">{entry.emoji}</span>
               {entry.label}

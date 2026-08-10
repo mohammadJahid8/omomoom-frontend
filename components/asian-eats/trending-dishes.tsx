@@ -91,7 +91,7 @@ function DishCard({
         />
 
         <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5">
-          <p className="text-brand text-[10px] font-bold tracking-[0.18em] uppercase">
+          <p className="text-brand-on-dark text-[10px] font-bold tracking-[0.18em] uppercase">
             Order this
           </p>
           <p

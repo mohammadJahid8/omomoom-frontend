@@ -1,7 +1,11 @@
 export function FinderSkeleton() {
   return (
-    <section className="bg-surface section-y border-b" aria-hidden="true">
-      <div className="container-page">
+    <section className="bg-surface section-y border-b">
+      <p role="status" className="sr-only">
+        Loading Miami restaurants
+      </p>
+
+      <div className="container-page" aria-hidden="true">
         <div className="mx-auto max-w-3xl space-y-3 text-center">
           <div className="bg-muted mx-auto h-3 w-32 animate-pulse rounded-full" />
           <div className="bg-muted mx-auto h-9 w-80 max-w-full animate-pulse rounded-lg" />

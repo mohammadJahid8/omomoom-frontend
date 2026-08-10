@@ -25,7 +25,7 @@ export async function RestaurantFinder({
     <section className="bg-surface section-y border-b" id={FINDER_ID}>
       <div className="container-page">
         <div className="mx-auto max-w-3xl text-center">
-          <p className="text-brand text-xs font-semibold tracking-[0.16em] uppercase">
+          <p className="text-brand-ink text-xs font-semibold tracking-[0.16em] uppercase">
             The Omomoom filter
           </p>
           <h2 className="font-heading mt-3 text-3xl font-extrabold sm:text-4xl">
@@ -33,8 +33,7 @@ export async function RestaurantFinder({
           </h2>
           <p className="text-muted-foreground mx-auto mt-4 max-w-xl text-base leading-relaxed">
             Narrow {meta.total.toLocaleString()} Miami restaurants by cuisine,
-            neighborhood and price. Ranked by real reviews, never by paid
-            placement.
+            neighborhood and price. Nobody pays to appear here.
           </p>
         </div>
 
@@ -42,15 +41,17 @@ export async function RestaurantFinder({
           <FilterPanel facets={facets} total={meta.total} />
         </div>
 
-        <div id={RESULTS_ID} className="mt-14 scroll-mt-24 lg:mt-16">
+        <div id={RESULTS_ID} className="mt-14 lg:mt-16">
           <div className="mb-8 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between lg:mb-10">
             <div>
-              <p className="text-brand text-xs font-semibold tracking-[0.14em] uppercase">
-                Foodie charts
-              </p>
-              <h3 className="font-heading mt-2 text-2xl font-bold sm:text-3xl">
-                {isFiltered ? "Matching restaurants" : "Trending this week"}
+              <h3 className="font-heading text-2xl font-bold sm:text-3xl">
+                {isFiltered ? "Matching restaurants" : "Featured restaurants"}
               </h3>
+              {isFiltered ? null : (
+                <p className="text-muted-foreground mt-2 text-sm">
+                  Michelin-recognised kitchens first, then the rest of Miami.
+                </p>
+              )}
             </div>
 
             <p className="text-muted-foreground text-sm" aria-live="polite">
@@ -69,7 +70,6 @@ export async function RestaurantFinder({
               filters={filters}
               initial={restaurants}
               meta={meta}
-              ranked={!isFiltered}
             />
           ) : (
             <EmptyState />

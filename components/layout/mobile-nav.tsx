@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Menu } from "lucide-react";
 
+import { useSession } from "@/components/auth/session-provider";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -18,6 +20,8 @@ import { cn } from "@/lib/utils";
 
 export function MobileNav({ onDark = false }: { onDark?: boolean }) {
   const [open, setOpen] = useState(false);
+  const { user, signOut } = useSession();
+  const pathname = usePathname();
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -68,19 +72,45 @@ export function MobileNav({ onDark = false }: { onDark?: boolean }) {
         </nav>
 
         <div className="mt-auto flex flex-col gap-2 border-t px-6 py-5">
-          <SheetClose asChild>
-            <Button asChild variant="outline" className="w-full">
-              <Link href="/login">Log in</Link>
-            </Button>
-          </SheetClose>
-          <SheetClose asChild>
-            <Button
-              asChild
-              className="bg-brand text-brand-foreground hover:bg-brand/90 w-full"
-            >
-              <Link href="/claim">Claim your restaurant</Link>
-            </Button>
-          </SheetClose>
+          {user ? (
+            <>
+              <SheetClose asChild>
+                <Button asChild variant="outline" className="h-11 w-full">
+                  <Link href="/dashboard">Dashboard</Link>
+                </Button>
+              </SheetClose>
+              <Button
+                variant="ghost"
+                className="text-muted-foreground h-11 w-full"
+                onClick={async () => {
+                  await signOut();
+                  setOpen(false);
+                }}
+              >
+                Log out of @{user.username}
+              </Button>
+            </>
+          ) : (
+            <>
+              <SheetClose asChild>
+                <Button asChild variant="outline" className="h-11 w-full">
+                  <Link href={`/login?next=${encodeURIComponent(pathname)}`}>
+                    Log in
+                  </Link>
+                </Button>
+              </SheetClose>
+              <SheetClose asChild>
+                <Button
+                  asChild
+                  className="bg-brand-ink text-brand-ink-foreground hover:bg-brand-ink/90 h-11 w-full"
+                >
+                  <Link href={`/join?next=${encodeURIComponent(pathname)}`}>
+                    Join free
+                  </Link>
+                </Button>
+              </SheetClose>
+            </>
+          )}
         </div>
       </SheetContent>
     </Sheet>

@@ -71,8 +71,8 @@ export function RestaurantActions({
           variant={primary ? "default" : "outline"}
           className={
             primary
-              ? "bg-brand text-brand-foreground hover:bg-brand/90 rounded-full"
-              : "rounded-full"
+              ? "bg-brand-ink text-brand-ink-foreground hover:bg-brand-ink/90 h-11 rounded-full px-5"
+              : "h-11 rounded-full px-5"
           }
         >
           <a

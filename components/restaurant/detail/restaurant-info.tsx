@@ -55,7 +55,7 @@ export function RestaurantInfo({
 
         {tel && phone ? (
           <Row icon={Phone} label="Phone">
-            <a href={tel} className="hover:text-brand transition-colors">
+            <a href={tel} className="hover:text-brand-ink transition-colors">
               {phone}
             </a>
           </Row>
@@ -87,7 +87,7 @@ export function RestaurantInfo({
           <Row icon={Mail} label="Email">
             <a
               href={`mailto:${email}`}
-              className="hover:text-brand break-all transition-colors"
+              className="hover:text-brand-ink break-all transition-colors"
             >
               {email}
             </a>
@@ -109,7 +109,7 @@ function Row({
 }) {
   return (
     <div className="flex gap-3.5">
-      <Icon className="text-brand mt-0.5 size-4 shrink-0" aria-hidden="true" />
+      <Icon className="text-brand-ink mt-0.5 size-4 shrink-0" aria-hidden="true" />
       <div className="min-w-0 text-sm">
         <dt className="text-muted-foreground text-[11px] font-semibold tracking-widest uppercase">
           {label}
@@ -132,7 +132,7 @@ function ExternalLink({
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="hover:text-brand break-all underline underline-offset-2 transition-colors"
+      className="hover:text-brand-ink break-all underline underline-offset-2 transition-colors"
     >
       {children}
     </a>

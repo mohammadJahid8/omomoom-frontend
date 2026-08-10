@@ -22,21 +22,28 @@ type FilterDrawerProps = {
   facets: RestaurantFacets | undefined;
 
   total: number;
+
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 };
 
-export function FilterDrawer({ facets, total }: FilterDrawerProps) {
-  const [open, setOpen] = useState(false);
+export function FilterDrawer({
+  facets,
+  total,
+  open,
+  onOpenChange,
+}: FilterDrawerProps) {
   const { filters, clear } = useFilterState();
   const activeCount = countActiveFilters(filters);
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
+    <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetTrigger asChild>
         <Button variant="outline" className="rounded-full">
           <SlidersHorizontal className="size-4" />
           All filters
           {activeCount > 0 ? (
-            <span className="bg-brand text-brand-foreground ml-0.5 inline-flex size-5 items-center justify-center rounded-full text-[11px] font-bold tabular-nums">
+            <span className="bg-brand-ink text-brand-ink-foreground ml-0.5 inline-flex size-5 items-center justify-center rounded-full text-[11px] font-bold tabular-nums">
               {activeCount}
             </span>
           ) : null}
@@ -96,7 +103,7 @@ export function FilterDrawer({ facets, total }: FilterDrawerProps) {
           ) : null}
 
           <SheetClose asChild>
-            <Button className="bg-brand text-brand-foreground hover:bg-brand/90 flex-1 rounded-full">
+            <Button className="bg-brand-ink text-brand-ink-foreground hover:bg-brand-ink/90 h-11 flex-1 rounded-full">
               Show {total.toLocaleString()} {total === 1 ? "result" : "results"}
             </Button>
           </SheetClose>
@@ -130,7 +137,7 @@ function FilterSection({
         <span className="flex items-center gap-2 text-sm font-semibold">
           {title}
           {selectedCount > 0 ? (
-            <span className="bg-brand-subtle text-brand rounded-full px-2 py-0.5 text-[11px] font-bold tabular-nums">
+            <span className="bg-brand-subtle text-brand-ink rounded-full px-2 py-0.5 text-[11px] font-bold tabular-nums">
               {selectedCount}
             </span>
           ) : null}

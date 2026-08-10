@@ -1,8 +1,10 @@
 import type { ApiResponse } from "@/types/api";
 
-const BASE_URL = (
+export const API_BASE_URL = (
   process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5001/api/v1"
 ).replace(/\/$/, "");
+
+const BASE_URL = API_BASE_URL;
 
 export class ApiError extends Error {
   constructor(
@@ -24,6 +26,11 @@ type FetchOptions = {
 
   tags?: string[];
   signal?: AbortSignal;
+
+  /** Send the session cookie and never cache the result. */
+  session?: boolean;
+
+  headers?: Record<string, string>;
 };
 
 export async function apiFetch<T>(
@@ -34,6 +41,8 @@ export async function apiFetch<T>(
     revalidate = 60,
     tags,
     signal,
+    session = false,
+    headers,
   }: FetchOptions = {},
 ): Promise<{ data: T; meta?: ApiResponse<T>["meta"] }> {
   const url = `${BASE_URL}${path.startsWith("/") ? path : `/${path}`}`;
@@ -49,10 +58,14 @@ export async function apiFetch<T>(
         ...(payload === undefined
           ? {}
           : { "Content-Type": "application/json" }),
+        ...headers,
       },
       ...(payload === undefined ? {} : { body: JSON.stringify(payload) }),
+      ...(session ? { credentials: "include", cache: "no-store" } : {}),
 
-      ...(isRead ? { next: { revalidate, ...(tags ? { tags } : {}) } } : {}),
+      ...(isRead && !session
+        ? { next: { revalidate, ...(tags ? { tags } : {}) } }
+        : {}),
     });
   } catch (cause) {
     throw new ApiError(`Could not reach the API at ${url}`, 503, [

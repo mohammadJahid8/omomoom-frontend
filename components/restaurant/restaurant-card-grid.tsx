@@ -4,17 +4,11 @@ import type { RestaurantCardData } from "@/types/api";
 type RestaurantCardGridProps = {
   restaurants: RestaurantCardData[];
 
-  ranked?: boolean;
-
-  startRank?: number;
-
   priorityCount?: number;
 };
 
 export function RestaurantCardGrid({
   restaurants,
-  ranked = false,
-  startRank = 1,
   priorityCount = 3,
 }: RestaurantCardGridProps) {
   return (
@@ -23,7 +17,6 @@ export function RestaurantCardGrid({
         <RestaurantCard
           key={restaurant.id}
           restaurant={restaurant}
-          rank={ranked ? startRank + index : undefined}
           priority={index < priorityCount}
         />
       ))}

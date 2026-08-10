@@ -57,8 +57,8 @@ export function Pagination({
             className={cn(
               "inline-flex size-10 items-center justify-center rounded-full text-sm font-medium tabular-nums transition-colors",
               entry === page
-                ? "bg-brand text-brand-foreground"
-                : "hover:border-brand hover:text-brand border border-transparent",
+                ? "bg-brand-ink text-brand-ink-foreground"
+                : "hover:border-brand-ink hover:text-brand-ink border border-transparent",
             )}
           >
             {entry}
@@ -95,7 +95,7 @@ function Step({
       <span
         aria-disabled="true"
         aria-label={label}
-        className={cn(shared, "border-border/60 text-muted-foreground/40")}
+        className={cn(shared, "border-border/60 text-muted-foreground/55")}
       >
         {icon}
       </span>
@@ -108,7 +108,7 @@ function Step({
       aria-label={label}
       className={cn(
         shared,
-        "border-border-strong/50 hover:border-brand hover:text-brand transition-colors",
+        "border-border-strong/50 hover:border-brand-ink hover:text-brand-ink transition-colors",
       )}
     >
       {icon}

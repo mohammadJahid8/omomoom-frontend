@@ -46,10 +46,13 @@ export function Hero() {
           </div>
 
           <div className="mt-8">
-            <p className="mb-3 text-xs font-semibold tracking-[0.14em] text-white/60 uppercase">
+            <p
+              id="popular-searches"
+              className="mb-3 text-xs font-semibold tracking-[0.14em] text-white/60 uppercase"
+            >
               Popular searches
             </p>
-            <PopularSearches />
+            <PopularSearches labelledBy="popular-searches" />
           </div>
 
           <p className="mt-10 flex items-center gap-2 text-sm text-white/70">

@@ -7,7 +7,7 @@ const benefits = [
   "Update your menu, hours and contact details",
   "Upload professional photos and choose your hero image",
   "Tell your story: the chef, the founding, what makes it yours",
-  "Respond to reviews and keep your page accurate",
+  "Point diners at your booking link, your menu or your front door",
 ];
 
 export function ClaimCta() {
@@ -22,7 +22,7 @@ export function ClaimCta() {
 
           <div className="relative grid gap-10 lg:grid-cols-2 lg:items-center lg:gap-16">
             <div>
-              <p className="text-brand mb-3 text-xs font-semibold tracking-[0.16em] uppercase">
+              <p className="text-brand-on-dark mb-3 text-xs font-semibold tracking-[0.16em] uppercase">
                 For restaurant owners
               </p>
               <h2 className="font-heading text-2xl leading-tight font-extrabold sm:text-3xl lg:text-[2.5rem]">
@@ -39,7 +39,7 @@ export function ClaimCta() {
                 <Button
                   asChild
                   size="lg"
-                  className="bg-brand text-brand-foreground hover:bg-brand/90 rounded-full"
+                  className="bg-brand-ink text-brand-ink-foreground hover:bg-brand-ink/90 rounded-full"
                 >
                   <Link href="/claim">
                     Claim your restaurant
@@ -50,7 +50,7 @@ export function ClaimCta() {
                   asChild
                   size="lg"
                   variant="outline"
-                  className="border-background/25 text-background hover:bg-background/10 hover:text-background rounded-full bg-transparent"
+                  className="border-background/40 text-background hover:bg-background/10 hover:text-background rounded-full bg-transparent"
                 >
                   <Link href="/for-restaurants">See how it works</Link>
                 </Button>
@@ -60,7 +60,7 @@ export function ClaimCta() {
             <ul className="space-y-3.5">
               {benefits.map((benefit) => (
                 <li key={benefit} className="flex items-start gap-3">
-                  <span className="bg-brand/15 text-brand mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full">
+                  <span className="bg-brand-on-dark/15 text-brand-on-dark mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full">
                     <Check className="size-3" aria-hidden="true" />
                   </span>
                   <span className="text-background/85 text-sm leading-relaxed">

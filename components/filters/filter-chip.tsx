@@ -71,8 +71,8 @@ export function FilterChip({
       className={cn(
         "inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium transition-colors duration-150",
         selected
-          ? "border-brand bg-brand text-brand-foreground"
-          : "border-border-strong/50 hover:border-brand hover:bg-brand-subtle hover:text-brand",
+          ? "border-brand-ink bg-brand-ink text-brand-ink-foreground"
+          : "border-border-strong/50 hover:border-brand-ink hover:bg-brand-subtle hover:text-brand-ink",
         className,
       )}
     >

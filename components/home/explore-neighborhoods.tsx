@@ -20,7 +20,7 @@ export async function ExploreNeighborhoods({ limit = 6 }: { limit?: number }) {
           eyebrow="By area"
           title="Explore Miami, neighborhood by neighborhood"
           description="Brickell after work, Wynwood on a Saturday, Coral Gables when it matters. Each area eats differently."
-          action={{ label: "All neighborhoods", href: "/restaurants" }}
+          action={{ label: "Browse all restaurants", href: "/restaurants" }}
           className="mb-8 lg:mb-10"
         />
 

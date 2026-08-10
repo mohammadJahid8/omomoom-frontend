@@ -11,7 +11,7 @@ export const ASIAN_CUISINES: AsianCuisine[] = [
   { slug: "filipino", label: "Filipino", emoji: "🇵🇭" },
   { slug: "indonesian", label: "Indonesian", emoji: "🇮🇩" },
   { slug: "lao", label: "Lao", emoji: "🇱🇦" },
-  { slug: "asian", label: "Pan-Asian", emoji: "🥢" },
+  { slug: "asian", label: "Pan-Asian", emoji: "🍜" },
   { slug: "asian-fusion", label: "Asian Fusion", emoji: "✨" },
 ];
 

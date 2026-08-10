@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { X } from "lucide-react";
 
 import { FilterChip } from "@/components/filters/filter-chip";
@@ -29,6 +30,7 @@ const INLINE_GROUPS: { key: FilterKey; take: number }[] = [
 export function FilterPanel({ facets, total }: FilterPanelProps) {
   const { filters, clear, isPending } = useFilterState();
   const activeCount = countActiveFilters(filters);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   return (
     <div
@@ -79,9 +81,14 @@ export function FilterPanel({ facets, total }: FilterPanelProps) {
                 ))}
 
                 {hidden > 0 ? (
-                  <span className="text-muted-foreground inline-flex items-center px-2 text-xs">
+                  <button
+                    type="button"
+                    onClick={() => setDrawerOpen(true)}
+                    aria-label={`Show ${hidden} more ${group?.label.toLowerCase()} filters`}
+                    className="border-border text-muted-foreground hover:border-border-strong hover:text-foreground inline-flex items-center rounded-full border border-dashed px-3 py-1.5 text-sm font-medium transition-colors"
+                  >
                     +{hidden} more
-                  </span>
+                  </button>
                 ) : null}
               </div>
             </div>
@@ -94,7 +101,7 @@ export function FilterPanel({ facets, total }: FilterPanelProps) {
           <button
             type="button"
             onClick={clear}
-            className="text-brand inline-flex items-center gap-1.5 text-sm font-semibold transition-colors hover:underline"
+            className="text-brand-ink inline-flex items-center gap-1.5 text-sm font-semibold transition-colors hover:underline"
           >
             <X className="size-3.5" aria-hidden="true" />
             Clear {activeCount} {activeCount === 1 ? "filter" : "filters"}
@@ -105,7 +112,12 @@ export function FilterPanel({ facets, total }: FilterPanelProps) {
           </p>
         )}
 
-        <FilterDrawer facets={facets} total={total} />
+        <FilterDrawer
+          facets={facets}
+          total={total}
+          open={drawerOpen}
+          onOpenChange={setDrawerOpen}
+        />
       </div>
     </div>
   );
