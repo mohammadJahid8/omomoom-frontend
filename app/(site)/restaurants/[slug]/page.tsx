@@ -6,12 +6,12 @@ import { ArrowLeft } from "lucide-react";
 import { RestaurantActions } from "@/components/restaurant/detail/restaurant-actions";
 import { RestaurantHeader } from "@/components/restaurant/detail/restaurant-header";
 import { RestaurantInfo } from "@/components/restaurant/detail/restaurant-info";
-import {
-  OwnerCta,
-  RestaurantReviews,
-} from "@/components/restaurant/detail/restaurant-placeholders";
+import { OwnerCta } from "@/components/restaurant/detail/restaurant-placeholders";
 import { RestaurantTags } from "@/components/restaurant/detail/restaurant-tags";
+import { RecommendDish } from "@/components/restaurant/recommend-dish";
+import { RecommendationList } from "@/components/restaurant/recommendation-list";
 import { RestaurantCard } from "@/components/restaurant/restaurant-card";
+import { getRecommendations } from "@/lib/api/contributions";
 import {
   getRelatedRestaurants,
   getRestaurantBySlug,
@@ -144,7 +144,10 @@ export default async function RestaurantPage({ params }: PageProps) {
 
   if (!restaurant) notFound();
 
-  const related = await getRelatedRestaurants(slug).catch(() => []);
+  const [related, recommendations] = await Promise.all([
+    getRelatedRestaurants(slug).catch(() => []),
+    getRecommendations(restaurant.id, 20),
+  ]);
   const dishes = restaurant.signatureDishes;
   const summary = summarise(restaurant);
 
@@ -205,7 +208,28 @@ export default async function RestaurantPage({ params }: PageProps) {
               ) : null}
 
               <RestaurantTags tags={restaurant.tags} />
-              <RestaurantReviews name={restaurant.name} />
+
+              <section id="recommendations" className="scroll-mt-24">
+                <h2 className="font-heading text-xl font-bold sm:text-2xl">
+                  What people say to order
+                </h2>
+                <p className="text-muted-foreground mt-2">
+                  {recommendations.length > 0
+                    ? `${recommendations.length} ${recommendations.length === 1 ? "recommendation" : "recommendations"} from people who ate here.`
+                    : "Recommendations from people who ate here."}
+                </p>
+
+                <div className="mt-6">
+                  <RecommendDish
+                    restaurantId={restaurant.id}
+                    restaurantName={restaurant.name}
+                  />
+                </div>
+
+                <div className="mt-6">
+                  <RecommendationList recommendations={recommendations} />
+                </div>
+              </section>
             </div>
           </div>
 

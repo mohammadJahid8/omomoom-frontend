@@ -3,6 +3,7 @@ import { Clock, MapPin } from "lucide-react";
 
 import { MichelinBadge } from "@/components/restaurant/michelin-badge";
 import { RestaurantImage } from "@/components/restaurant/restaurant-image";
+import { SaveButton } from "@/components/restaurant/save-button";
 import { PriceTier } from "@/components/shared/price-tier";
 import { RatingBadge } from "@/components/shared/rating-badge";
 import type { RestaurantCardData } from "@/types/api";
@@ -21,6 +22,7 @@ export function RestaurantCard({
   className,
 }: RestaurantCardProps) {
   const {
+    id,
     slug,
     name,
     description,
@@ -54,7 +56,10 @@ export function RestaurantCard({
           className="object-cover transition-transform duration-500 ease-out-soft group-hover:scale-[1.04]"
         />
 
-        <MichelinBadge rating={michelin} className="absolute top-3 right-3" />
+        <div className="absolute top-3 right-3 flex items-center gap-2">
+          <MichelinBadge rating={michelin} />
+          <SaveButton restaurantId={id} restaurantName={name} />
+        </div>
 
         {signatureDishes.length > 0 ? (
           <p className="absolute bottom-3 left-3 max-w-[calc(100%-1.5rem)] truncate rounded-full bg-white/95 px-3 py-1.5 text-xs font-semibold text-neutral-900 shadow-sm">

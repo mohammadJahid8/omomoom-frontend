@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Inter_Tight } from "next/font/google";
 
 import { SessionProvider } from "@/components/auth/session-provider";
+import { SavedProvider } from "@/components/restaurant/saved-provider";
 import { siteConfig } from "@/lib/site-config";
 
 import "./globals.css";
@@ -84,7 +85,9 @@ export default function RootLayout({
           Skip to content
         </a>
 
-        <SessionProvider>{children}</SessionProvider>
+        <SessionProvider>
+          <SavedProvider>{children}</SavedProvider>
+        </SessionProvider>
       </body>
     </html>
   );

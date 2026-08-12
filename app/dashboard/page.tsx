@@ -19,6 +19,7 @@ import {
 } from "@/components/dashboard/primitives";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { getMyStats } from "@/lib/auth/contributions";
 import { requireSession } from "@/lib/auth/session";
 import { isAdmin, isOwner } from "@/types/auth";
 
@@ -60,7 +61,10 @@ function greeting() {
 }
 
 export default async function DashboardPage() {
-  const user = await requireSession("/dashboard");
+  const [user, stats] = await Promise.all([
+    requireSession("/dashboard"),
+    getMyStats(),
+  ]);
 
   const audience = isAdmin(user)
     ? "Admin"
@@ -98,28 +102,28 @@ export default async function DashboardPage() {
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <StatCard
           label="Reviews"
-          value={0}
+          value={stats.recommendations}
           icon={BookOpen}
           href="/dashboard/profile"
           tint="rose"
         />
         <StatCard
           label="Photos"
-          value={0}
+          value={stats.photos}
           icon={Camera}
           href="/dashboard/profile/photos"
           tint="gold"
         />
         <StatCard
           label="Places tried"
-          value={0}
+          value={stats.placesTried}
           icon={MapPin}
           href="/dashboard/profile/tried"
           tint="olive"
         />
         <StatCard
           label="Want to try"
-          value={0}
+          value={stats.wantToTry}
           icon={Compass}
           href="/dashboard/profile/want-to-try"
           tint="clay"

@@ -5,7 +5,7 @@ import { ArrowRight } from "lucide-react";
 
 import { CommunityRail } from "@/components/asian-eats/community-rail";
 import { CuisineFilter } from "@/components/asian-eats/cuisine-filter";
-import { EditorsPick } from "@/components/asian-eats/editors-pick";
+import { EditorsPicks } from "@/components/asian-eats/editors-picks";
 import { pickTrendingDishes } from "@/components/asian-eats/trending-dishes";
 import { RestaurantCard } from "@/components/restaurant/restaurant-card";
 import { Button } from "@/components/ui/button";
@@ -60,7 +60,7 @@ export default async function AsianEatsPage({ searchParams }: PageProps) {
     getUpcomingEvents(3),
   ]);
 
-  const [lead] = pickTrendingDishes(featuredResult.restaurants, 1);
+  const picks = pickTrendingDishes(featuredResult.restaurants, 6);
   const total = featuredResult.meta.total;
 
   const counts = new Map(
@@ -130,10 +130,22 @@ export default async function AsianEatsPage({ searchParams }: PageProps) {
         </div>
       </section>
 
-      {lead ? (
+      {picks.length > 0 ? (
         <section className="pt-14 sm:pt-16 lg:pt-20">
           <div className="container-page">
-            <EditorsPick restaurant={lead.restaurant} dish={lead.dish} />
+            <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+              <div>
+                <h2 className="font-heading text-2xl font-extrabold sm:text-3xl">
+                  Where we would send you first
+                </h2>
+                <p className="text-muted-foreground mt-2 max-w-lg">
+                  A handful of places worth crossing town for, and the dish to
+                  order when you get there.
+                </p>
+              </div>
+            </div>
+
+            <EditorsPicks picks={picks} />
           </div>
         </section>
       ) : null}

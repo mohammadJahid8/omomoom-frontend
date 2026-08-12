@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { isActive, profileTabs } from "@/lib/dashboard-nav";
 import { cn } from "@/lib/utils";
 import type { SessionUser } from "@/types/auth";
+import type { ContributionStats } from "@/types/contribution";
 
 function initials(name: string) {
   return name
@@ -18,13 +19,6 @@ function initials(name: string) {
     .join("");
 }
 
-const COUNTS: Record<string, number> = {
-  "/dashboard/profile": 0,
-  "/dashboard/profile/photos": 0,
-  "/dashboard/profile/tried": 0,
-  "/dashboard/profile/want-to-try": 0,
-};
-
 const TAB_TINT: Record<string, string> = {
   "/dashboard/profile": "bg-tint-rose text-tint-rose-ink",
   "/dashboard/profile/photos": "bg-tint-gold text-tint-gold-ink",
@@ -32,8 +26,21 @@ const TAB_TINT: Record<string, string> = {
   "/dashboard/profile/want-to-try": "bg-tint-clay text-tint-clay-ink",
 };
 
-export function ProfileHeader({ user }: { user: SessionUser }) {
+export function ProfileHeader({
+  user,
+  stats,
+}: {
+  user: SessionUser;
+  stats: ContributionStats;
+}) {
   const pathname = usePathname();
+
+  const counts: Record<string, number> = {
+    "/dashboard/profile": stats.recommendations,
+    "/dashboard/profile/photos": stats.photos,
+    "/dashboard/profile/tried": stats.placesTried,
+    "/dashboard/profile/want-to-try": stats.wantToTry,
+  };
 
   return (
     <div>
@@ -96,7 +103,7 @@ export function ProfileHeader({ user }: { user: SessionUser }) {
                       : "bg-muted text-muted-foreground",
                   )}
                 >
-                  {COUNTS[tab.href] ?? 0}
+                  {counts[tab.href] ?? 0}
                 </span>
               </Link>
             );

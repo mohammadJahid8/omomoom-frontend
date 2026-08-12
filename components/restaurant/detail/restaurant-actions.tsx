@@ -8,6 +8,7 @@ import {
 import type { LucideIcon } from "lucide-react";
 
 import { ShareButton } from "@/components/restaurant/detail/share-button";
+import { SaveButton } from "@/components/restaurant/save-button";
 import { Button } from "@/components/ui/button";
 import { directionsUrl, telHref } from "@/lib/restaurant";
 import type { RestaurantDetailData } from "@/types/api";
@@ -87,6 +88,12 @@ export function RestaurantActions({
           </a>
         </Button>
       ))}
+
+      <SaveButton
+        restaurantId={restaurant.id}
+        restaurantName={restaurant.name}
+        variant="full"
+      />
 
       <ShareButton name={restaurant.name} summary={summary} />
     </div>
