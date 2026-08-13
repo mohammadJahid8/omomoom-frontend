@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 import { AuthSplit } from "@/components/auth/auth-split";
-import { FormAlert } from "@/components/auth/field";
+import { FormAlert } from "@/components/shared/field";
 import { JoinForm } from "@/components/auth/join-form";
 import { oauthErrorMessage, safeNextPath } from "@/lib/auth/next-path";
 

@@ -3,7 +3,7 @@
 import { useActionState, useState } from "react";
 import { Loader2 } from "lucide-react";
 
-import { Field, FieldLabel, FormAlert } from "@/components/auth/field";
+import { Field, FieldLabel, FormAlert } from "@/components/shared/field";
 import { Button } from "@/components/ui/button";
 import { toFormError, type FormError } from "@/lib/api/auth";
 import { createEvent, updateEvent, type EventInput } from "@/lib/api/events";

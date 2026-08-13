@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Check, Loader2 } from "lucide-react";
 
-import { Field, FormAlert } from "@/components/auth/field";
+import { Field, FormAlert } from "@/components/shared/field";
 import { useSession } from "@/components/auth/session-provider";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";

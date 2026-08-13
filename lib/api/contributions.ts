@@ -40,6 +40,12 @@ export type RecommendationInput = {
   dish: string;
   rating: number;
   comment?: string | null;
+  wouldOrderAgain?: string | null;
+  taste?: number | null;
+  service?: number | null;
+  value?: number | null;
+  ambience?: number | null;
+  hygiene?: number | null;
 };
 
 export async function recommendDish(
@@ -53,6 +59,11 @@ export async function recommendDish(
   return data;
 }
 
+/**
+ * Never cached. Posting a recommendation happens in the browser against the
+ * API directly, so Next has nothing to invalidate — a cached read would leave
+ * the author staring at a page missing the thing they just wrote.
+ */
 export async function getRecommendations(
   restaurantId: string,
   limit = 10,
@@ -60,7 +71,7 @@ export async function getRecommendations(
   try {
     const { data } = await apiFetch<Recommendation[]>(
       `/recommendations?restaurantId=${restaurantId}&limit=${limit}`,
-      { revalidate: 30, tags: ["recommendations"] },
+      { noStore: true },
     );
     return data;
   } catch {

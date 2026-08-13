@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { CuisineFlag } from "@/components/shared/cuisine-flag";
 import type { AsianCuisine } from "@/lib/asian-eats";
 import { cn } from "@/lib/utils";
 
@@ -32,9 +33,7 @@ export function CuisineFilter({
               href={`${basePath}?cuisine=${cuisine.slug}#${anchor}`}
               active={active}
             >
-              <span aria-hidden="true" className="text-[0.95em]">
-                {cuisine.emoji}
-              </span>
+              <CuisineFlag code={cuisine.code} label={cuisine.label} />
               {cuisine.label}
               <span
                 className={cn(

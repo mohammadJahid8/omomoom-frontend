@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { ArrowRight, Loader2, Lock, Mail } from "lucide-react";
 
 import { AuthDivider, AuthSwitch } from "@/components/auth/auth-split";
-import { Field, FormAlert } from "@/components/auth/field";
+import { Field, FormAlert } from "@/components/shared/field";
 import { GoogleButton } from "@/components/auth/google-button";
 import { useSession } from "@/components/auth/session-provider";
 import { Button } from "@/components/ui/button";

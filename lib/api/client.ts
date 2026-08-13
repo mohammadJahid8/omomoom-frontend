@@ -30,6 +30,9 @@ type FetchOptions = {
   /** Send the session cookie and never cache the result. */
   session?: boolean;
 
+  /** Read fresh every time without sending credentials. */
+  noStore?: boolean;
+
   headers?: Record<string, string>;
 };
 
@@ -42,6 +45,7 @@ export async function apiFetch<T>(
     tags,
     signal,
     session = false,
+    noStore = false,
     headers,
   }: FetchOptions = {},
 ): Promise<{ data: T; meta?: ApiResponse<T>["meta"] }> {
@@ -62,8 +66,9 @@ export async function apiFetch<T>(
       },
       ...(payload === undefined ? {} : { body: JSON.stringify(payload) }),
       ...(session ? { credentials: "include", cache: "no-store" } : {}),
+      ...(noStore && !session ? { cache: "no-store" as const } : {}),
 
-      ...(isRead && !session
+      ...(isRead && !session && !noStore
         ? { next: { revalidate, ...(tags ? { tags } : {}) } }
         : {}),
     });

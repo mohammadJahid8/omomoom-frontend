@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useState } from "react";
-import { Eye, EyeOff, type LucideIcon } from "lucide-react";
+import { ChevronDown, Eye, EyeOff, type LucideIcon } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -131,5 +131,121 @@ export function FormAlert({ children }: { children: React.ReactNode }) {
     >
       {children}
     </p>
+  );
+}
+
+export function TextareaField({
+  name,
+  label,
+  error,
+  hint,
+  required,
+  className,
+  ...props
+}: React.ComponentProps<"textarea"> & {
+  name: string;
+  label: string;
+  error?: string;
+  hint?: string;
+}) {
+  const helpId = useId();
+
+  return (
+    <div className="grid gap-2">
+      <FieldLabel htmlFor={name} required={required}>
+        {label}
+      </FieldLabel>
+
+      <textarea
+        id={name}
+        name={name}
+        rows={props.rows ?? 3}
+        required={required}
+        aria-invalid={error ? true : undefined}
+        aria-describedby={error || hint ? helpId : undefined}
+        className={cn(
+          "border-input bg-card focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:border-destructive rounded-xl border px-3.5 py-3 text-sm leading-relaxed outline-none focus-visible:ring-3",
+          className,
+        )}
+        {...props}
+      />
+
+      {error ? (
+        <p id={helpId} className="text-destructive text-xs">
+          {error}
+        </p>
+      ) : hint ? (
+        <p id={helpId} className="text-muted-foreground text-xs">
+          {hint}
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
+export type SelectOption = { value: string; label: string };
+
+export function SelectField({
+  name,
+  label,
+  options,
+  error,
+  hint,
+  required,
+  placeholder,
+  className,
+  ...props
+}: Omit<React.ComponentProps<"select">, "children"> & {
+  name: string;
+  label: string;
+  options: SelectOption[];
+  error?: string;
+  hint?: string;
+  placeholder?: string;
+}) {
+  const helpId = useId();
+
+  return (
+    <div className="grid gap-2">
+      <FieldLabel htmlFor={name} required={required}>
+        {label}
+      </FieldLabel>
+
+      <div className="relative">
+        <select
+          id={name}
+          name={name}
+          required={required}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={error || hint ? helpId : undefined}
+          className={cn(
+            "border-input bg-card focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:border-destructive h-12 w-full appearance-none rounded-xl border px-3.5 pe-10 text-sm outline-none focus-visible:ring-3",
+            className,
+          )}
+          {...props}
+        >
+          {placeholder ? <option value="">{placeholder}</option> : null}
+          {options.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+        <ChevronDown
+          aria-hidden="true"
+          className="text-muted-foreground pointer-events-none absolute inset-y-0 end-3.5 my-auto size-4"
+        />
+      </div>
+
+      {error ? (
+        <p id={helpId} className="text-destructive text-xs">
+          {error}
+        </p>
+      ) : hint ? (
+        <p id={helpId} className="text-muted-foreground text-xs">
+          {hint}
+        </p>
+      ) : null}
+    </div>
   );
 }

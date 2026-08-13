@@ -1,18 +1,23 @@
-export type AsianCuisine = { slug: string; label: string; emoji: string };
+export type AsianCuisine = {
+  slug: string;
+  label: string;
+  /** ISO country code for the flag, or a sentinel for the two that have none. */
+  code: string;
+};
 
 export const ASIAN_CUISINES: AsianCuisine[] = [
-  { slug: "japanese", label: "Japanese", emoji: "🇯🇵" },
-  { slug: "chinese", label: "Chinese", emoji: "🇨🇳" },
-  { slug: "thai", label: "Thai", emoji: "🇹🇭" },
-  { slug: "korean", label: "Korean", emoji: "🇰🇷" },
-  { slug: "vietnamese", label: "Vietnamese", emoji: "🇻🇳" },
-  { slug: "indian", label: "Indian", emoji: "🇮🇳" },
-  { slug: "taiwanese", label: "Taiwanese", emoji: "🇹🇼" },
-  { slug: "filipino", label: "Filipino", emoji: "🇵🇭" },
-  { slug: "indonesian", label: "Indonesian", emoji: "🇮🇩" },
-  { slug: "lao", label: "Lao", emoji: "🇱🇦" },
-  { slug: "asian", label: "Pan-Asian", emoji: "🍜" },
-  { slug: "asian-fusion", label: "Asian Fusion", emoji: "✨" },
+  { slug: "japanese", label: "Japanese", code: "JP" },
+  { slug: "chinese", label: "Chinese", code: "CN" },
+  { slug: "thai", label: "Thai", code: "TH" },
+  { slug: "korean", label: "Korean", code: "KR" },
+  { slug: "vietnamese", label: "Vietnamese", code: "VN" },
+  { slug: "indian", label: "Indian", code: "IN" },
+  { slug: "taiwanese", label: "Taiwanese", code: "TW" },
+  { slug: "filipino", label: "Filipino", code: "PH" },
+  { slug: "indonesian", label: "Indonesian", code: "ID" },
+  { slug: "lao", label: "Lao", code: "LA" },
+  { slug: "asian", label: "Pan-Asian", code: "PAN_ASIAN" },
+  { slug: "asian-fusion", label: "Asian Fusion", code: "FUSION" },
 ];
 
 export const ASIAN_CUISINE_SLUGS = ASIAN_CUISINES.map((c) => c.slug);

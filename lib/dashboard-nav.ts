@@ -92,7 +92,7 @@ export function dashboardNav(user: SessionUser): DashboardNavGroup[] {
           href: "/dashboard/admin/restaurants",
           icon: Store,
         },
-        { label: "People", href: "/dashboard/admin/people", icon: Users },
+        { label: "Users", href: "/dashboard/admin/users", icon: Users },
         {
           label: "Claims",
           href: "/dashboard/admin/claims",
