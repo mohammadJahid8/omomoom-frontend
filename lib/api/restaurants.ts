@@ -48,13 +48,21 @@ export async function getRestaurants(
   };
 }
 
+/**
+ * `fresh` skips the cache. The claim flow needs it: claiming changes
+ * claimState, and a stale read would show someone the claim button for a
+ * restaurant they just finished claiming.
+ */
 export async function getRestaurantBySlug(
   slug: string,
+  { fresh = false }: { fresh?: boolean } = {},
 ): Promise<RestaurantDetailData | null> {
   try {
     const { data } = await apiFetch<RestaurantDetailData>(
       `/restaurants/${encodeURIComponent(slug)}`,
-      { revalidate: 300, tags: ["restaurants", `restaurant:${slug}`] },
+      fresh
+        ? { noStore: true }
+        : { revalidate: 300, tags: ["restaurants", `restaurant:${slug}`] },
     );
     return data;
   } catch (error) {

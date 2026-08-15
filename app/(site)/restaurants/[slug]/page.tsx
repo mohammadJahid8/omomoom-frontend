@@ -237,7 +237,12 @@ export default async function RestaurantPage({ params }: PageProps) {
             <aside className="order-2">
               <RestaurantInfo restaurant={restaurant} />
             </aside>
-            <OwnerCta name={restaurant.name} className="order-4" />
+            <OwnerCta
+              name={restaurant.name}
+              slug={restaurant.slug}
+              claimed={restaurant.claimState === "CLAIMED"}
+              className="order-4"
+            />
           </div>
         </div>
       </div>
