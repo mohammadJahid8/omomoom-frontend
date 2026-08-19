@@ -4,7 +4,6 @@ import {
   Camera,
   Compass,
   Flag,
-  Images,
   LayoutDashboard,
   MapPin,
   Settings,
@@ -66,18 +65,11 @@ export function dashboardNav(user: SessionUser): DashboardNavGroup[] {
     groups.push({
       label: "Your restaurant",
       items: [
-        { label: "Overview", href: "/dashboard/restaurant", icon: Store, exact: true },
         {
-          label: "Photos",
-          href: "/dashboard/restaurant/photos",
-          icon: Images,
-          soon: true,
-        },
-        {
-          label: "Details & hours",
-          href: "/dashboard/restaurant/details",
-          icon: BookOpen,
-          soon: true,
+          label: "Studio",
+          href: "/dashboard/restaurant",
+          icon: Store,
+          exact: true,
         },
       ],
     });

@@ -177,14 +177,43 @@ export default async function RestaurantPage({ params }: PageProps) {
 
         <div className="mt-12 grid gap-x-14 gap-y-12 lg:mt-14 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start">
           <div className="contents lg:block lg:space-y-12">
-            {restaurant.description ? (
+            {restaurant.description ||
+            restaurant.whatMakesSpecial ||
+            restaurant.story ||
+            restaurant.chefStory ? (
               <section className="order-1">
                 <h2 className="font-heading text-xl font-bold sm:text-2xl">
                   About {restaurant.name}
                 </h2>
-                <p className="text-muted-foreground mt-4 max-w-2xl leading-relaxed">
-                  {restaurant.description}
-                </p>
+
+                {restaurant.description ? (
+                  <p className="text-muted-foreground mt-4 max-w-2xl leading-relaxed">
+                    {restaurant.description}
+                  </p>
+                ) : null}
+
+                {restaurant.whatMakesSpecial ? (
+                  <p className="bg-brand-subtle text-brand-ink mt-5 max-w-2xl rounded-2xl px-5 py-4 leading-relaxed font-medium">
+                    {restaurant.whatMakesSpecial}
+                  </p>
+                ) : null}
+
+                {restaurant.story ? (
+                  <p className="text-muted-foreground mt-5 max-w-2xl leading-relaxed whitespace-pre-line">
+                    {restaurant.story}
+                  </p>
+                ) : null}
+
+                {restaurant.chefStory ? (
+                  <div className="mt-6 max-w-2xl">
+                    <h3 className="font-heading text-base font-bold">
+                      The chef
+                    </h3>
+                    <p className="text-muted-foreground mt-2 leading-relaxed whitespace-pre-line">
+                      {restaurant.chefStory}
+                    </p>
+                  </div>
+                ) : null}
               </section>
             ) : null}
 

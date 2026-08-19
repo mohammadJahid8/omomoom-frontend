@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Construction } from "lucide-react";
+import { ArrowLeft, Lock } from "lucide-react";
 
+import { SubscribePanel } from "@/components/claim/subscribe-panel";
 import { Button } from "@/components/ui/button";
 import { getRestaurantBySlug } from "@/lib/api/restaurants";
-import { CLAIM_PERIOD, CLAIM_PRICE } from "@/lib/claim";
+import { getSubscriptionFor } from "@/lib/auth/subscription";
 
 export const metadata: Metadata = {
   title: "Subscribe",
@@ -22,8 +23,10 @@ export default async function ClaimSubscribePage({
 
   if (!restaurant) notFound();
 
+  const subscription = await getSubscriptionFor(restaurant.id);
+
   return (
-    <div className="container-page py-12 sm:py-16">
+    <div className="container-page py-10 sm:py-14">
       <div className="mx-auto w-full max-w-lg">
         <Link
           href={`/claim/${slug}`}
@@ -33,27 +36,33 @@ export default async function ClaimSubscribePage({
           Back
         </Link>
 
-        <div className="border-foreground/15 mt-6 rounded-2xl border border-dashed p-6 text-center sm:p-8">
-          <span className="bg-tint-gold text-tint-gold-ink mx-auto flex size-12 items-center justify-center rounded-2xl">
-            <Construction className="size-5.5" aria-hidden="true" />
-          </span>
+        <h1 className="font-heading mt-6 text-3xl leading-tight font-extrabold">
+          {restaurant.name}
+        </h1>
 
-          <h1 className="font-heading mt-5 text-xl font-extrabold">
-            Subscription is being built
-          </h1>
-          <p className="text-muted-foreground mx-auto mt-2 max-w-sm text-sm leading-relaxed">
-            You are verified as managing {restaurant.name}. Taking the{" "}
-            {CLAIM_PRICE} a {CLAIM_PERIOD} payment, and the Studio it unlocks,
-            land in the next release. Nothing has been charged.
-          </p>
-
-          <Button
-            asChild
-            variant="outline"
-            className="border-foreground/25 hover:border-foreground mt-6 h-11 rounded-xl font-semibold"
-          >
-            <Link href={`/restaurants/${slug}`}>View the listing</Link>
-          </Button>
+        <div className="mt-7">
+          {subscription ? (
+            <SubscribePanel subscription={subscription} />
+          ) : (
+            <div className="border-foreground/15 rounded-2xl border border-dashed p-6 text-center">
+              <span className="bg-muted text-muted-foreground mx-auto flex size-12 items-center justify-center rounded-2xl">
+                <Lock className="size-5.5" aria-hidden="true" />
+              </span>
+              <h2 className="font-heading mt-5 text-lg font-bold">
+                Verify first
+              </h2>
+              <p className="text-muted-foreground mx-auto mt-2 max-w-sm text-sm leading-relaxed">
+                Confirm your connection to {restaurant.name} before subscribing.
+                Nothing is charged until that is done.
+              </p>
+              <Button
+                asChild
+                className="bg-brand-ink text-brand-ink-foreground hover:bg-brand-ink/90 mt-5 h-11 rounded-xl px-5 font-semibold"
+              >
+                <Link href={`/claim/${slug}/verify`}>Verify your connection</Link>
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </div>

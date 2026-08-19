@@ -42,3 +42,24 @@ export async function requestManualReview(claimId: string, note: string) {
   });
   return data;
 }
+
+export type SuggestInput = {
+  name: string;
+  municipality: string;
+  addressLine?: string | null;
+  phone?: string | null;
+  websiteUrl?: string | null;
+  claimantRole: string;
+  workEmail: string;
+  mobilePhone: string;
+  note: string;
+};
+
+export async function suggestRestaurant(input: SuggestInput): Promise<Claim> {
+  const { data } = await apiFetch<Claim>("/claims/suggest", {
+    method: "POST",
+    body: input,
+    session: true,
+  });
+  return data;
+}

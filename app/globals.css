@@ -340,6 +340,24 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+
+  /*
+   * Spinners and skeletons are status, not decoration. Reduced motion asks us
+   * to stop moving things around; it does not ask us to stop telling people
+   * the app is working. A frozen spinner reads as a hang, which is worse for
+   * everyone than a small rotation. Slowed down rather than switched off.
+   */
+  .animate-spin {
+    animation: var(--animate-spin, spin 1s linear infinite) !important;
+    animation-duration: 1.6s !important;
+    animation-iteration-count: infinite !important;
+  }
+
+  .animate-pulse {
+    animation: var(--animate-pulse, pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite) !important;
+    animation-duration: 3s !important;
+    animation-iteration-count: infinite !important;
+  }
 }
 
 /* --------------------------------------------------------------------------

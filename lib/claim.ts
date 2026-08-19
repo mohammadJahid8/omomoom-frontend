@@ -81,7 +81,7 @@ export const OWNER_CONTROLS = [
   "Opening hours, including holidays",
   "Phone, website, menu and reservation links",
   "Description and your story",
-  "Signature dishes — what you want people to order",
+  "Signature dishes, the ones you want people to order",
   "Photos of the room and the food",
   "Parking, accessibility and policies",
 ];

@@ -57,7 +57,7 @@ const OUTCOMES = [
   {
     icon: MessageSquare,
     title: "Answer what guests ask",
-    body: "Parking, accessibility, dress code, private dining — before they call to ask.",
+    body: "Parking, accessibility, dress code and private dining, before they call to ask.",
     tint: "bg-tint-olive text-tint-olive-ink",
   },
 ];
@@ -116,16 +116,8 @@ export default async function ClaimRestaurantPage({ params }: PageProps) {
             </h2>
             <p className="text-muted-foreground mt-1.5 text-sm leading-relaxed">
               Someone has already verified their connection to{" "}
-              {restaurant.name}. If that should be you, tell us and we will look
-              into it.
+              {restaurant.name}, so it is not open to claim.
             </p>
-            <Button
-              asChild
-              variant="outline"
-              className="border-foreground/25 hover:border-foreground mt-4 h-11 rounded-xl font-semibold"
-            >
-              <Link href={`/claim/${slug}/dispute`}>Report a problem</Link>
-            </Button>
           </div>
         ) : (
           <>

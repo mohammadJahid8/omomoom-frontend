@@ -4,20 +4,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Share2 } from "lucide-react";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { AvatarUpload } from "@/components/dashboard/avatar-upload";
 import { Button } from "@/components/ui/button";
 import { isActive, profileTabs } from "@/lib/dashboard-nav";
 import { cn } from "@/lib/utils";
 import type { SessionUser } from "@/types/auth";
 import type { ContributionStats } from "@/types/contribution";
-
-function initials(name: string) {
-  return name
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase() ?? "")
-    .join("");
-}
 
 const TAB_TINT: Record<string, string> = {
   "/dashboard/profile": "bg-tint-rose text-tint-rose-ink",
@@ -45,12 +37,7 @@ export function ProfileHeader({
   return (
     <div>
       <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:items-center sm:gap-5 sm:text-left">
-        <Avatar className="size-20 shrink-0 sm:size-24">
-          {user.avatarUrl ? <AvatarImage src={user.avatarUrl} alt="" /> : null}
-          <AvatarFallback className="bg-tint-rose text-tint-rose-ink text-xl font-bold">
-            {initials(user.name)}
-          </AvatarFallback>
-        </Avatar>
+        <AvatarUpload user={user} />
 
         <div className="min-w-0 flex-1">
           <h1 className="font-heading truncate text-2xl font-extrabold sm:text-3xl">
@@ -65,13 +52,14 @@ export function ProfileHeader({
         </div>
 
         <Button
+          asChild
           variant="outline"
-          disabled
-          className="h-10 shrink-0 rounded-xl font-semibold"
-          title="Public profiles arrive with contributions"
+          className="border-foreground/25 hover:border-foreground h-10 shrink-0 rounded-xl font-semibold"
         >
-          <Share2 />
-          Share
+          <Link href={`/u/${user.username}`}>
+            <Share2 />
+            View public profile
+          </Link>
         </Button>
       </div>
 

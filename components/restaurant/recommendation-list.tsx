@@ -1,6 +1,12 @@
+"use client";
+
+import { useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
 import { Sparkles, Star } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ImageViewer } from "@/components/shared/image-viewer";
 import { cn } from "@/lib/utils";
 import type { OrderAgain, Recommendation } from "@/types/contribution";
 
@@ -81,8 +87,8 @@ export function RecommendationList({
   if (recommendations.length === 0) {
     return (
       <p className="border-foreground/15 text-muted-foreground rounded-2xl border border-dashed p-6 text-sm leading-relaxed">
-        Nobody has said what to order here yet. Be the first — it is the most
-        useful thing you can leave for the next person.
+        Nobody has said what to order here yet. Be the first, it is the
+        most useful thing you can leave for the next person.
       </p>
     );
   }
@@ -106,9 +112,12 @@ export function RecommendationList({
 
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
-                <span className="text-sm font-semibold">
+                <Link
+                  href={`/u/${item.user.username}`}
+                  className="hover:text-brand-ink text-sm font-semibold transition-colors"
+                >
                   @{item.user.username}
-                </span>
+                </Link>
                 <span className="text-muted-foreground text-xs">
                   {when(item.createdAt)}
                 </span>
@@ -145,6 +154,10 @@ export function RecommendationList({
                 </p>
               ) : null}
 
+              {item.photos.length > 0 ? (
+                <ReviewGallery photos={item.photos} who={item.user.username} />
+              ) : null}
+
               {aspectsOf(item).length > 0 ? (
                 <dl className="text-muted-foreground mt-3.5 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs">
                   {item.visitScore !== null ? (
@@ -170,5 +183,60 @@ export function RecommendationList({
         </li>
       ))}
     </ol>
+  );
+}
+
+/** The photos someone took on the visit, sitting with what they wrote. */
+function ReviewGallery({
+  photos,
+  who,
+}: {
+  photos: { id: string; url: string; caption: string | null }[];
+  who: string;
+}) {
+  const [open, setOpen] = useState<number | null>(null);
+
+  // A review is mostly its words. However many photos come with it, the card
+  // shows a handful and the rest live one click away.
+  const SHOWN = 5;
+  const visible = photos.slice(0, SHOWN);
+  const hidden = photos.length - visible.length;
+
+  return (
+    <>
+      <ul className="mt-3 flex flex-wrap gap-2">
+        {visible.map((photo, index) => (
+          <li key={photo.id}>
+            <button
+              type="button"
+              onClick={() => setOpen(index)}
+              aria-label={`Open photo ${index + 1} from @${who}`}
+              className="bg-muted focus-visible:ring-ring relative block size-20 cursor-zoom-in overflow-hidden rounded-xl outline-none focus-visible:ring-3 sm:size-24"
+            >
+              <Image
+                src={photo.url}
+                alt={photo.caption ?? ""}
+                fill
+                sizes="96px"
+                className="object-cover transition-transform duration-300 hover:scale-105"
+              />
+
+              {hidden > 0 && index === SHOWN - 1 ? (
+                <span className="absolute inset-0 grid place-items-center bg-black/60 text-sm font-bold text-white">
+                  +{hidden}
+                </span>
+              ) : null}
+            </button>
+          </li>
+        ))}
+      </ul>
+
+      <ImageViewer
+        images={photos}
+        index={open}
+        onIndexChange={setOpen}
+        label={`Photos from @${who}`}
+      />
+    </>
   );
 }

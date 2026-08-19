@@ -73,7 +73,8 @@ export async function fetchSession(
 export async function updateProfile(input: {
   name?: string;
   username?: string;
-  avatarUrl?: string | null;
+  /** A key from /uploads/sign, or null to remove the photo. Never a URL. */
+  avatarKey?: string | null;
 }): Promise<SessionUser> {
   const { data } = await apiFetch<SessionUser>("/auth/me", {
     method: "PATCH",

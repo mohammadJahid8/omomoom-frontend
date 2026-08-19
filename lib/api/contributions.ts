@@ -46,6 +46,8 @@ export type RecommendationInput = {
   value?: number | null;
   ambience?: number | null;
   hygiene?: number | null;
+  /** Keys from /uploads/sign, with the shape the browser measured. */
+  photos?: { key: string; width?: number; height?: number }[];
 };
 
 export async function recommendDish(
@@ -61,7 +63,7 @@ export async function recommendDish(
 
 /**
  * Never cached. Posting a recommendation happens in the browser against the
- * API directly, so Next has nothing to invalidate — a cached read would leave
+ * API directly, so Next has nothing to invalidate, and a cached read would leave
  * the author staring at a page missing the thing they just wrote.
  */
 export async function getRecommendations(

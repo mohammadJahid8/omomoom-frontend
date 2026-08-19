@@ -1,6 +1,8 @@
 import { apiFetch } from "@/lib/api/client";
 import type { ApiMeta } from "@/types/api";
 import type {
+  AdminClaim,
+  ClaimCounts,
   AdminRestaurant,
   AdminRestaurantInput,
   AdminRestaurantRow,
@@ -103,5 +105,56 @@ export async function updateUser(
     body: input,
     session: true,
   });
+  return data;
+}
+
+/* ---------------------------------------------------------------- claims */
+
+export type ClaimQuery = {
+  view?: "OPEN" | "WAITING" | "DECIDED" | "ALL";
+  q?: string;
+  page?: number;
+  limit?: number;
+};
+
+export async function listAdminClaims(query: ClaimQuery = {}) {
+  const params = new URLSearchParams();
+  params.set("view", query.view ?? "OPEN");
+  if (query.q) params.set("q", query.q);
+  params.set("page", String(query.page ?? 1));
+  params.set("limit", String(query.limit ?? 20));
+
+  const { data, meta } = await apiFetch<AdminClaim[]>(
+    `/claims/admin?${params.toString()}`,
+    { session: true },
+  );
+
+  return {
+    claims: data,
+    meta: meta as ApiMeta & { counts: ClaimCounts },
+  };
+}
+
+export async function decideClaim(
+  id: string,
+  input: { action: "APPROVE" | "REJECT"; note?: string },
+): Promise<AdminClaim> {
+  const { data } = await apiFetch<AdminClaim>(`/claims/admin/${id}`, {
+    method: "PATCH",
+    body: input,
+    session: true,
+  });
+  return data;
+}
+
+export async function revokeOwnership(input: {
+  restaurantId: string;
+  userId: string;
+  note: string;
+}): Promise<{ restaurantId: string; ownersLeft: number }> {
+  const { data } = await apiFetch<{
+    restaurantId: string;
+    ownersLeft: number;
+  }>("/claims/admin/revoke", { method: "POST", body: input, session: true });
   return data;
 }

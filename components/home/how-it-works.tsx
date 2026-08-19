@@ -7,7 +7,7 @@ const steps = [
     icon: SlidersHorizontal,
     title: "Narrow it down",
     description:
-      "Filter by cuisine, neighborhood, price, dish, dietary needs and occasion — or just describe the night you want and let the search work it out.",
+      "Filter by cuisine, neighborhood, price, dish, dietary needs and occasion. Or just describe the night you want and let the search work it out.",
   },
   {
     icon: Compass,

@@ -7,6 +7,10 @@ import { Check, ChevronDown, Loader2, Sparkles, UtensilsCrossed } from "lucide-r
 
 import { Field, FieldLabel, FormAlert } from "@/components/shared/field";
 import { useSession } from "@/components/auth/session-provider";
+import {
+  ReviewPhotos,
+  type ReviewPhoto,
+} from "@/components/restaurant/review-photos";
 import { StarRating } from "@/components/restaurant/star-rating";
 import { Button } from "@/components/ui/button";
 import { toFormError, type FormError } from "@/lib/api/auth";
@@ -63,6 +67,7 @@ export function RecommendDish({
   const [again, setAgain] = useState<string>("");
   const [aspects, setAspects] = useState<VisitRatings>(EMPTY);
   const [showVisit, setShowVisit] = useState(false);
+  const [photos, setPhotos] = useState<ReviewPhoto[]>([]);
 
   const score = visitScore(aspects);
 
@@ -71,12 +76,24 @@ export function RecommendDish({
     setAgain("");
     setAspects(EMPTY);
     setShowVisit(false);
+    photos.forEach((photo) => URL.revokeObjectURL(photo.preview));
+    setPhotos([]);
   };
 
   const [error, submit, pending] = useActionState<FormError | null, FormData>(
     async (_previous, formData) => {
       if (rating === 0) {
         return { message: "Rate the dish before posting.", fields: {} };
+      }
+
+      // Photos upload while the review is being written, so this only bites if
+      // someone is quick. Better to hold the post for a second than to drop a
+      // picture they deliberately attached.
+      if (photos.some((photo) => !photo.key && !photo.error)) {
+        return {
+          message: "Give the photos a moment to finish uploading.",
+          fields: {},
+        };
       }
 
       try {
@@ -91,6 +108,13 @@ export function RecommendDish({
           value: aspects.value || null,
           ambience: aspects.ambience || null,
           hygiene: aspects.hygiene || null,
+          photos: photos
+            .filter((photo) => Boolean(photo.key))
+            .map((photo) => ({
+              key: photo.key as string,
+              width: photo.width,
+              height: photo.height,
+            })),
         });
 
         setDone(true);
@@ -293,6 +317,13 @@ export function RecommendDish({
           className="border-input bg-card focus-visible:border-ring focus-visible:ring-ring/50 rounded-xl border px-3.5 py-3 text-sm leading-relaxed outline-none focus-visible:ring-3"
         />
       </div>
+
+      <ReviewPhotos
+        photos={photos}
+        onChange={setPhotos}
+        restaurantId={restaurantId}
+        disabled={pending}
+      />
 
       <div className="flex flex-wrap gap-3">
         <Button

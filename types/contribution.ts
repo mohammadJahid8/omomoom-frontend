@@ -13,7 +13,13 @@ export type Recommendation = {
   dish: string;
   rating: number;
   comment: string | null;
-  photoUrl: string | null;
+  photos: {
+    id: string;
+    url: string;
+    caption: string | null;
+    width: number | null;
+    height: number | null;
+  }[];
   wouldOrderAgain: OrderAgain | null;
   taste: number | null;
   service: number | null;

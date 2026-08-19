@@ -15,9 +15,9 @@ import { createRestaurant, updateRestaurant } from "@/lib/api/admin";
 import type { AdminRestaurant, AdminRestaurantInput } from "@/types/admin";
 
 const STATUS = [
-  { value: "PUBLISHED", label: "Published — live on the site" },
-  { value: "DRAFT", label: "Draft — hidden until finished" },
-  { value: "HIDDEN", label: "Hidden — taken down deliberately" },
+  { value: "PUBLISHED", label: "Published, live on the site" },
+  { value: "DRAFT", label: "Draft, hidden until finished" },
+  { value: "HIDDEN", label: "Hidden, taken down deliberately" },
 ];
 
 const PRICE = [

@@ -1,6 +1,30 @@
 import type { NextConfig } from "next";
 
+/**
+ * Where this Next server reaches the API. Always absolute: server-side fetch
+ * cannot resolve a relative URL.
+ */
+const API_ORIGIN = (
+  process.env.API_INTERNAL_URL ?? "http://localhost:5001"
+).replace(/\/$/, "");
+
 const nextConfig: NextConfig = {
+  /**
+   * The browser talks to the API through this app's own origin. Deployed, the
+   * frontend and the API sit on different hosts, so a cookie set by the API
+   * directly is third-party: the browser will not send it back to *us*, and
+   * every server component that reads `cookies()` sees an anonymous visitor.
+   * Proxying keeps the session cookie first-party, which is also what lets it
+   * stay SameSite=Lax.
+   */
+  async rewrites() {
+    return [
+      {
+        source: "/api/v1/:path*",
+        destination: `${API_ORIGIN}/api/v1/:path*`,
+      },
+    ];
+  },
   images: {
     /**
      * The imported restaurant photos are hotlinked from 187 different hosts

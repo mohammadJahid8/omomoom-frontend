@@ -67,3 +67,62 @@ export type AdminUser = {
     ownedRestaurants: number;
   };
 };
+
+/* ---------------------------------------------------------------- claims */
+
+export type ClaimStatus = "PENDING" | "VERIFIED" | "APPROVED" | "REJECTED";
+
+/** Why the row is on the desk. Worked out by the API from the restaurant's state. */
+export type ClaimKind =
+  | "NEW_LISTING"
+  | "MANUAL"
+  | "STALLED"
+  | "IN_PROGRESS";
+
+export type ClaimOwner = {
+  userId: string;
+  createdAt: string;
+  user: { id: string; name: string; username: string; email: string };
+};
+
+export type AdminClaim = {
+  id: string;
+  kind: ClaimKind;
+  status: ClaimStatus;
+  claimantRole: string;
+  workEmail: string;
+  mobilePhone: string;
+  note: string | null;
+  verificationMethod: string | null;
+  verifiedAt: string | null;
+  codeSentTo: string | null;
+  codeExpiresAt: string | null;
+  codeAttempts: number;
+  reviewNote: string | null;
+  reviewedAt: string | null;
+  reviewedBy: string | null;
+  createdAt: string;
+  user: {
+    id: string;
+    name: string;
+    username: string;
+    email: string;
+    avatarUrl: string | null;
+    createdAt: string;
+  };
+  restaurant: {
+    id: string;
+    slug: string;
+    name: string;
+    status: RestaurantStatus;
+    claimState: "UNCLAIMED" | "PENDING" | "CLAIMED";
+    phone: string | null;
+    email: string | null;
+    websiteUrl: string | null;
+    municipality: string | null;
+    neighborhood: { name: string } | null;
+    owners: ClaimOwner[];
+  };
+};
+
+export type ClaimCounts = { open: number; waiting: number; decided: number };

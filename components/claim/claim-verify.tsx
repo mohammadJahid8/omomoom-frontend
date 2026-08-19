@@ -22,6 +22,7 @@ import {
   TextareaField,
 } from "@/components/shared/field";
 import { Button } from "@/components/ui/button";
+import { refreshRestaurant } from "@/lib/actions/restaurants";
 import { toFormError, type FormError } from "@/lib/api/auth";
 import {
   requestManualReview,
@@ -411,6 +412,7 @@ function CodeStep({
           claim.id,
           String(formData.get("code") ?? "").trim(),
         );
+        await refreshRestaurant(claim.restaurant.slug);
         onDone();
         return null;
       } catch (cause) {
@@ -542,7 +544,7 @@ function ManualStep({
         required
         minLength={20}
         maxLength={1000}
-        placeholder="I have owned it since 2019. Our business licence is under Zorro Hospitality LLC, and the number on the listing is out of date — the current one is..."
+        placeholder="I have owned it since 2019. Our business licence is under Zorro Hospitality LLC, and the number on the listing is out of date. The current one is..."
         error={error?.fields.note}
       />
 

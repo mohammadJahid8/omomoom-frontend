@@ -1,8 +1,29 @@
 import type { ApiResponse } from "@/types/api";
 
-export const API_BASE_URL = (
-  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5001/api/v1"
-).replace(/\/$/, "");
+const trim = (value: string) => value.replace(/\/$/, "");
+
+/**
+ * Two bases, deliberately.
+ *
+ * The browser uses a path on our own origin (`/api/v1`) so the proxy in
+ * next.config keeps the session cookie first-party. The Next server cannot
+ * fetch a relative URL, and would be talking to itself if it could, so it goes
+ * straight to the API and forwards the cookie by hand.
+ */
+const BROWSER_BASE = trim(
+  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5001/api/v1",
+);
+
+const SERVER_BASE = trim(
+  process.env.API_INTERNAL_URL
+    ? `${trim(process.env.API_INTERNAL_URL)}/api/v1`
+    : BROWSER_BASE.startsWith("/")
+      ? "http://localhost:5001/api/v1"
+      : BROWSER_BASE,
+);
+
+export const API_BASE_URL =
+  typeof window === "undefined" ? SERVER_BASE : BROWSER_BASE;
 
 const BASE_URL = API_BASE_URL;
 

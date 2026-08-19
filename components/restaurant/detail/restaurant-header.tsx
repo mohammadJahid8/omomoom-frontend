@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { MapPin } from "lucide-react";
 
+import { RestaurantGallery } from "@/components/restaurant/detail/restaurant-gallery";
 import { MichelinBadge } from "@/components/restaurant/michelin-badge";
 import { RestaurantImage } from "@/components/restaurant/restaurant-image";
 import { PriceTier } from "@/components/shared/price-tier";
@@ -24,6 +25,7 @@ export function RestaurantHeader({
     priceTier,
     reviewCount,
     ratingAverage,
+    photos,
   } = restaurant;
 
   return (
@@ -43,6 +45,8 @@ export function RestaurantHeader({
           </div>
         ) : null}
       </div>
+
+      <RestaurantGallery name={name} photos={photos} coverUrl={imageUrl} />
 
       <h1 className="font-heading mt-7 text-3xl font-extrabold sm:text-4xl lg:text-5xl">
         {name}

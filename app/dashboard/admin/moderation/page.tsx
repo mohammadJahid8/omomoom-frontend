@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
-import { NotBuiltYet, PageHeader } from "@/components/dashboard/primitives";
+import { PhotoModeration } from "@/components/dashboard/photo-moderation";
+import { PageHeader } from "@/components/dashboard/primitives";
 
 export const metadata: Metadata = { title: "Moderation" };
 
@@ -9,18 +10,9 @@ export default function AdminModerationPage() {
     <>
       <PageHeader
         title="Moderation"
-        description="Anything a member contributed that needs a second pair of eyes."
+        description="Photos from members, before they reach a restaurant's page. Owners publish their own without asking."
       />
-      <NotBuiltYet
-        title="Waiting on contributions"
-        body="There is nothing to moderate until people can post reviews and photos. This queue ships with them, not before, so it is built against the real shape of the data."
-        bullets={[
-          "Photos waiting on approval before they appear publicly",
-          "Reported reviews, with the reason given",
-          "Edits an owner suggested to their own listing",
-          "One place to approve, hide or remove",
-        ]}
-      />
+      <PhotoModeration />
     </>
   );
 }

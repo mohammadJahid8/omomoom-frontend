@@ -69,7 +69,7 @@ export function resolveStep(
 
 /**
  * Always explicit, `details` included. A bare URL means "no preference", which
- * the server answers with the default step — so omitting the param here would
+ * the server answers with the default step, so omitting the param here would
  * bounce someone straight back off the step they asked for.
  */
 export function stepHref(pathname: string, step: ClaimStep): string {
