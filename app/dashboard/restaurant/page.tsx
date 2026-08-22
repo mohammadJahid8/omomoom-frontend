@@ -28,16 +28,6 @@ import { isAdmin, isOwner } from "@/types/auth";
 
 export const metadata: Metadata = { title: "Your restaurant" };
 
-const renews = (iso: string | null) =>
-  iso
-    ? new Intl.DateTimeFormat("en-US", {
-        month: "long",
-        day: "numeric",
-        year: "numeric",
-        timeZone: "America/New_York",
-      }).format(new Date(iso))
-    : null;
-
 export default async function OwnerRestaurantPage() {
   const user = await requireSession("/dashboard/restaurant");
   if (!isOwner(user) && !isAdmin(user)) redirect("/dashboard");
@@ -127,11 +117,6 @@ export default async function OwnerRestaurantPage() {
             </Link>
           </Button>
         </div>
-      ) : listing.subscriptionStatus === "CANCELLED" ? (
-        <p className="bg-tint-gold text-tint-gold-ink mb-4 rounded-2xl px-4 py-3 text-sm leading-relaxed">
-          Cancelled. You keep editing until {renews(listing.subscribedUntil)},
-          and the listing stays on Omomoom either way.
-        </p>
       ) : null}
 
       <StudioSections listing={listing} locked={locked} />
@@ -181,6 +166,20 @@ export default async function OwnerRestaurantPage() {
           </p>
         </Panel>
       </div>
+
+      {locked ? null : (
+        <p className="text-muted-foreground mt-4 text-sm">
+          {listing.subscriptionStatus === "CANCELLED"
+            ? "Your subscription is cancelled. "
+            : "$49 a month keeps this editable. "}
+          <Link
+            href="/dashboard/restaurant/subscription"
+            className="text-foreground font-semibold hover:underline"
+          >
+            Manage your subscription
+          </Link>
+        </p>
+      )}
     </>
   );
 }

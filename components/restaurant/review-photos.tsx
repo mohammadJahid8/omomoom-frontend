@@ -26,11 +26,7 @@ export type ReviewPhoto = {
   error?: string;
 };
 
-/**
- * Photos start uploading the moment they are chosen, not when the review is
- * submitted. By the time someone has finished typing their comment, the files
- * are already in storage and posting is instant.
- */
+/** Uploads start on pick, not on submit, so posting is instant. */
 export function ReviewPhotos({
   photos,
   onChange,
@@ -61,9 +57,8 @@ export function ReviewPhotos({
 
   const send = async (item: ReviewPhoto) => {
     try {
-      // Read the shape here rather than on the server: the browser already has
-      // the file, and a gallery needs the ratio to lay out before the image
-      // has loaded.
+      // The browser already has the file, and a gallery needs the ratio to
+      // lay out before the image loads.
       const [{ key }, size] = await Promise.all([
         uploadImage(item.file, "USER_PHOTO", restaurantId),
         imageSize(item.file),

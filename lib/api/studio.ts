@@ -29,6 +29,16 @@ export async function saveStudioListing(
 
 /* ---------------------------------------------------------------- photos */
 
+export async function listStudioPhotos(
+  restaurantId: string,
+): Promise<StudioPhotos> {
+  const { data } = await apiFetch<StudioPhotos>(
+    `/studio/${restaurantId}/photos`,
+    { session: true, noStore: true },
+  );
+  return data;
+}
+
 export async function addStudioPhoto(
   restaurantId: string,
   input: { key: string; caption?: string; width?: number; height?: number },

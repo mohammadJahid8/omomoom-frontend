@@ -9,14 +9,7 @@ const API_ORIGIN = (
 ).replace(/\/$/, "");
 
 const nextConfig: NextConfig = {
-  /**
-   * The browser talks to the API through this app's own origin. Deployed, the
-   * frontend and the API sit on different hosts, so a cookie set by the API
-   * directly is third-party: the browser will not send it back to *us*, and
-   * every server component that reads `cookies()` sees an anonymous visitor.
-   * Proxying keeps the session cookie first-party, which is also what lets it
-   * stay SameSite=Lax.
-   */
+  /** Keeps the session cookie first-party, so server components can read it. */
   async rewrites() {
     return [
       {
@@ -27,15 +20,9 @@ const nextConfig: NextConfig = {
   },
   images: {
     /**
-     * The imported restaurant photos are hotlinked from 187 different hosts
-     * (the restaurants' own sites, BentoBox, Squarespace, OpenTable, Yelp).
-     * Listing them is impractical, so this is a deliberate wildcard.
-     *
-     * It is temporary. Once the client confirms image rights, a script
-     * re-hosts every photo to our own storage and this narrows to that one
-     * hostname. Do not ship the wildcard to production: it lets any HTTPS URL
-     * in the database drive our image optimiser, which is a resource-abuse
-     * vector if an admin account is ever compromised.
+     * Imported photos are hotlinked from ~187 hosts. Narrow this to the media
+     * domain once they are re-hosted: until then any URL in the database can
+     * drive the image optimiser. Do not ship as-is.
      */
     remotePatterns: [
       { protocol: "https", hostname: "**" },
@@ -44,8 +31,7 @@ const nextConfig: NextConfig = {
       { protocol: "http", hostname: "**" },
     ],
     formats: ["image/avif", "image/webp"],
-    // Third party hosts vary wildly in quality; cache aggressively so we fetch
-    // each source image once rather than on every revalidation
+    // Third party hosts are slow, so fetch each source image rarely.
     minimumCacheTTL: 60 * 60 * 24 * 7,
   },
   // Fail the production build on a type error rather than shipping it.

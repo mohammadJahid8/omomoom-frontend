@@ -3,7 +3,14 @@
 import { useEffect, useState, useTransition } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Camera, Clock, Loader2, Trash2, X } from "lucide-react";
+import {
+  Camera,
+  Clock,
+  Loader2,
+  Trash2,
+  TriangleAlert,
+  X,
+} from "lucide-react";
 
 import { EmptyState } from "@/components/dashboard/primitives";
 import { ImageViewer } from "@/components/shared/image-viewer";
@@ -69,6 +76,20 @@ export function MyPhotos() {
           <div key={n} className="bg-card aspect-4/3 animate-pulse rounded-2xl" />
         ))}
       </div>
+    );
+  }
+
+  // Before the empty state, never after: a request that failed is not the same
+  // as having nothing, and saying "no photos yet" to someone with fifty is a
+  // lie the page cannot take back.
+  if (failed) {
+    return (
+      <EmptyState
+        icon={TriangleAlert}
+        title="Could not load your photos"
+        body={failed}
+        tint="clay"
+      />
     );
   }
 

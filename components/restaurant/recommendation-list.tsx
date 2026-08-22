@@ -9,6 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ImageViewer } from "@/components/shared/image-viewer";
 import { cn } from "@/lib/utils";
 import type { OrderAgain, Recommendation } from "@/types/contribution";
+import { formatMiami, initials } from "@/lib/miami-time";
 
 const AGAIN_LABEL: Record<OrderAgain, string> = {
   DEFINITELY: "Would order again",
@@ -34,22 +35,8 @@ function aspectsOf(item: Recommendation): [string, number][] {
   ).filter((entry): entry is [string, number] => entry[1] !== null);
 }
 
-function initials(name: string) {
-  return name
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase() ?? "")
-    .join("");
-}
-
-function when(iso: string) {
-  return new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-    timeZone: "America/New_York",
-  }).format(new Date(iso));
-}
+const when = (iso: string) =>
+  formatMiami(iso, { month: "short", day: "numeric", year: "numeric" });
 
 export function Stars({
   rating,

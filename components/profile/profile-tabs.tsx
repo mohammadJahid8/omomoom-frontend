@@ -9,19 +9,12 @@ import { RestaurantCard } from "@/components/restaurant/restaurant-card";
 import { ImageViewer } from "@/components/shared/image-viewer";
 import { cn } from "@/lib/utils";
 import type { PublicProfile } from "@/types/profile";
+import { formatMiami } from "@/lib/miami-time";
 
 const when = (iso: string) =>
-  new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    year: "numeric",
-    timeZone: "America/New_York",
-  }).format(new Date(iso));
+  formatMiami(iso, { month: "short", year: "numeric" });
 
-/**
- * All four lists arrive with the page, so switching is instant. The tab lives
- * in the URL rather than in state, which makes a particular tab shareable and
- * the back button behave the way people expect.
- */
+/** All four lists arrive with the page; the tab lives in the URL so it is shareable. */
 export function ProfileTabs({
   profile,
   tab,
@@ -134,12 +127,7 @@ function Cards({
   );
 }
 
-/**
- * Photos uploaded before we recorded dimensions have none, so they fall back to
- * a plain landscape rather than collapsing to nothing. Both extremes are
- * clamped: a phone panorama should not become a sliver, and a tall portrait
- * should not run one column halfway down the page on its own.
- */
+/** Clamped at both ends: no slivers from panoramas, no runaway portraits. */
 function ratioOf(photo: { width: number | null; height: number | null }) {
   if (!photo.width || !photo.height) return 4 / 3;
   return Math.min(Math.max(photo.width / photo.height, 0.62), 1.9);
@@ -155,12 +143,7 @@ function PhotoGrid({ profile }: { profile: PublicProfile }) {
 
   return (
     <>
-      {/*
-        Columns rather than a grid: every photo keeps its own proportions, so a
-        tall plate shot is not cropped square to please the layout. Each tile is
-        told its ratio up front, which also means the page never jumps as they
-        load.
-      */}
+      {/* Columns, not a grid, so each photo keeps its own proportions. */}
       <ul className="columns-2 gap-3 sm:columns-3 lg:columns-4">
         {photos.map((photo, index) => (
           <li key={photo.id} className="mb-3 break-inside-avoid">

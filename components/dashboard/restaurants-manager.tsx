@@ -17,6 +17,7 @@ import {
 
 import { EmptyState, Panel } from "@/components/dashboard/primitives";
 import { RestaurantForm } from "@/components/dashboard/restaurant-form";
+import { RestaurantPhotosEditor } from "@/components/dashboard/restaurant-photos-editor";
 import { SelectField } from "@/components/shared/field";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -59,6 +60,7 @@ export function RestaurantsManager() {
   const [mode, setMode] = useState<Mode>({ kind: "list" });
   const [failed, setFailed] = useState<string | null>(null);
   const [confirming, setConfirming] = useState<AdminRestaurant | null>(null);
+  const [warning, setWarning] = useState<string | null>(null);
   const [busy, startBusy] = useTransition();
 
   useEffect(() => {
@@ -110,19 +112,29 @@ export function RestaurantsManager() {
 
   if (mode.kind !== "list") {
     return (
-      <Panel>
-        <h2 className="font-heading mb-5 text-lg font-bold">
-          {mode.kind === "edit" ? mode.restaurant.name : "New restaurant"}
-        </h2>
-        <RestaurantForm
-          restaurant={mode.kind === "edit" ? mode.restaurant : null}
-          onDone={() => {
-            setMode({ kind: "list" });
-            reload();
-          }}
-          onCancel={() => setMode({ kind: "list" })}
-        />
-      </Panel>
+      <div className="grid gap-4">
+        <Panel>
+          <h2 className="font-heading mb-5 text-lg font-bold">
+            {mode.kind === "edit" ? mode.restaurant.name : "New restaurant"}
+          </h2>
+          <RestaurantForm
+            restaurant={mode.kind === "edit" ? mode.restaurant : null}
+            onDone={() => {
+              setMode({ kind: "list" });
+              reload();
+            }}
+            onCancel={() => setMode({ kind: "list" })}
+          />
+        </Panel>
+
+        {/* Only once it exists: a photo needs a restaurant to belong to. */}
+        {mode.kind === "edit" ? (
+          <RestaurantPhotosEditor
+            restaurantId={mode.restaurant.id}
+            slug={mode.restaurant.slug}
+          />
+        ) : null}
+      </div>
     );
   }
 
@@ -195,19 +207,29 @@ export function RestaurantsManager() {
         <DeleteConfirm
           restaurant={confirming}
           busy={busy}
-          onCancel={() => setConfirming(null)}
+          onCancel={() => {
+            setConfirming(null);
+            setWarning(null);
+          }}
+          warning={warning}
           onConfirm={() =>
             startBusy(async () => {
               try {
-                await deleteRestaurant(confirming.id);
+                await deleteRestaurant(confirming.id, Boolean(warning));
                 setConfirming(null);
+                setWarning(null);
                 reload();
               } catch (error) {
-                setFailed(
+                const message =
                   error instanceof Error
                     ? error.message
-                    : "Could not delete that restaurant",
-                );
+                    : "Could not delete that restaurant";
+
+                // The API refuses once and explains what would be cancelled.
+                // Keep that explanation in front of the admin rather than
+                // burying it in the page-level error strip.
+                if (/subscription/i.test(message)) setWarning(message);
+                else setFailed(message);
               }
             })
           }
@@ -351,11 +373,14 @@ export function RestaurantsManager() {
 function DeleteConfirm({
   restaurant,
   busy,
+  warning,
   onCancel,
   onConfirm,
 }: {
   restaurant: AdminRestaurant;
   busy: boolean;
+  /** What the API refused over, if it did. Present means the next press forces it. */
+  warning: string | null;
   onCancel: () => void;
   onConfirm: () => void;
 }) {
@@ -377,8 +402,14 @@ function DeleteConfirm({
         <TriangleAlert className="text-destructive mt-0.5 size-5 shrink-0" />
         <div className="min-w-0 flex-1">
           <h3 id="delete-title" className="font-heading text-base font-bold">
-            Delete {restaurant.name}?
+            {warning ? `Really delete ${restaurant.name}?` : `Delete ${restaurant.name}?`}
           </h3>
+
+          {warning ? (
+            <p className="bg-destructive/10 text-destructive mt-2 rounded-xl px-3.5 py-3 text-sm leading-relaxed">
+              {warning}
+            </p>
+          ) : null}
 
           <p className="text-muted-foreground mt-1.5 text-sm leading-relaxed">
             {real.length > 0
@@ -405,7 +436,7 @@ function DeleteConfirm({
               className="bg-destructive h-10 rounded-xl px-4 font-semibold text-white hover:bg-destructive/90"
             >
               {busy ? <Loader2 className="size-4 animate-spin" /> : null}
-              Delete permanently
+              {warning ? "Delete and cancel the subscription" : "Delete permanently"}
             </Button>
             <Button
               variant="ghost"

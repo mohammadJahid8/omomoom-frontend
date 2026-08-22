@@ -159,34 +159,3 @@ export function EmptyState({
   );
 }
 
-export function NotBuiltYet({
-  title,
-  body,
-  bullets,
-}: {
-  title: string;
-  body: string;
-  bullets?: string[];
-}) {
-  return (
-    <Panel className="border-border/70 bg-card/40 border border-dashed ring-0">
-      <h2 className="font-heading text-base font-bold">{title}</h2>
-      <p className="text-muted-foreground mt-1.5 max-w-prose text-sm leading-relaxed">
-        {body}
-      </p>
-      {bullets?.length ? (
-        <ul className="text-muted-foreground mt-4 grid gap-2 text-sm">
-          {bullets.map((bullet) => (
-            <li key={bullet} className="flex gap-2.5">
-              <span
-                className="bg-border mt-2 size-1.5 shrink-0 rounded-full"
-                aria-hidden="true"
-              />
-              {bullet}
-            </li>
-          ))}
-        </ul>
-      ) : null}
-    </Panel>
-  );
-}

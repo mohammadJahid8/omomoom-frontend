@@ -2,21 +2,6 @@ import { apiFetch } from "@/lib/api/client";
 import type { ApiMeta } from "@/types/api";
 import type { MyPhoto, PhotoStatus, QueuePhoto } from "@/types/photo";
 
-export async function addCommunityPhoto(input: {
-  restaurantId: string;
-  key: string;
-  caption?: string;
-  width?: number;
-  height?: number;
-}): Promise<MyPhoto> {
-  const { data } = await apiFetch<MyPhoto>("/photos", {
-    method: "POST",
-    body: input,
-    session: true,
-  });
-  return data;
-}
-
 export async function listMyPhotos(): Promise<{ photos: MyPhoto[] }> {
   const { data } = await apiFetch<{ photos: MyPhoto[] }>("/photos/mine", {
     session: true,

@@ -1,16 +1,14 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   ArrowLeft,
   ArrowRight,
   ImagePlus,
   Loader2,
-  RotateCcw,
   Star,
   Trash2,
-  X,
 } from "lucide-react";
 
 import { ImageViewer } from "@/components/shared/image-viewer";
@@ -23,25 +21,14 @@ import {
   makeStudioCover,
   reorderStudioPhotos,
 } from "@/lib/api/studio";
+import { imageSize, inBatches, uploadImage } from "@/lib/api/uploads";
 import {
-  checkImage,
-  IMAGE_ACCEPT,
-  imageSize,
-  inBatches,
-  MAX_IMAGE_LABEL,
-  uploadImage,
-} from "@/lib/api/uploads";
+  PhotoStage,
+  stagePhotos,
+  type StagedPhoto,
+} from "@/components/dashboard/photo-stage";
 import { cn } from "@/lib/utils";
 import type { StudioPhoto, StudioPhotos } from "@/types/studio";
-
-/** An upload in flight. Keeps its key so a retry never re-sends the bytes. */
-type Pending = {
-  id: string;
-  preview: string;
-  file: File;
-  key?: string;
-  error?: string;
-};
 
 const UPLOADS_AT_ONCE = 3;
 
@@ -50,17 +37,20 @@ export function StudioPhotosPanel({
   slug,
   initial,
   locked,
+  unlimited = false,
 }: {
   restaurantId: string;
   slug: string;
   initial: StudioPhotos;
   locked: boolean;
+  /** Admins are curating the catalogue, not filling one listing's allowance. */
+  unlimited?: boolean;
 }) {
   const router = useRouter();
-  const input = useRef<HTMLInputElement>(null);
 
   const [photos, setPhotos] = useState<StudioPhoto[]>(initial.photos);
-  const [pending, setPending] = useState<Pending[]>([]);
+  const [staged, setStaged] = useState<StagedPhoto[]>([]);
+  const [saving, setSaving] = useState(false);
   const [failed, setFailed] = useState<string | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
   const [confirming, setConfirming] = useState<string | null>(null);
@@ -69,23 +59,8 @@ export function StudioPhotosPanel({
   const [over, setOver] = useState<string | null>(null);
   const [viewing, setViewing] = useState<number | null>(null);
 
-  const max = initial.max;
-  const room = max - photos.length - pending.length;
-
-  // Previews are object URLs. They must outlive every render but not the
-  // component, so the list is mirrored into a ref and released on unmount.
-  const live = useRef<Pending[]>([]);
-
-  useEffect(() => {
-    live.current = pending;
-  }, [pending]);
-
-  useEffect(
-    () => () => {
-      live.current.forEach((item) => URL.revokeObjectURL(item.preview));
-    },
-    [],
-  );
+  const max = unlimited ? Number.POSITIVE_INFINITY : initial.max;
+  const room = max - photos.length - staged.length;
 
   const settle = (next: StudioPhotos) => {
     setPhotos(next.photos);
@@ -93,65 +68,35 @@ export function StudioPhotosPanel({
     router.refresh();
   };
 
-  async function send(item: Pending) {
-    try {
-      const key =
-        item.key ??
-        (await uploadImage(item.file, "RESTAURANT_PHOTO", restaurantId)).key;
-
-      setPending((list) =>
-        list.map((one) => (one.id === item.id ? { ...one, key } : one)),
-      );
-
-      const size = await imageSize(item.file);
-      const photo = await addStudioPhoto(restaurantId, { key, ...size });
-
-      setPhotos((list) => [...list, photo]);
-      setPending((list) => list.filter((one) => one.id !== item.id));
-      URL.revokeObjectURL(item.preview);
-      void refreshRestaurant(slug);
-      router.refresh();
-    } catch (error) {
-      const message = toFormError(error).message;
-      setPending((list) =>
-        list.map((one) =>
-          one.id === item.id ? { ...one, key: item.key, error: message } : one,
-        ),
-      );
-    }
-  }
-
-  function take(files: FileList | File[]) {
+  /** Nothing has left the browser until this runs. */
+  const save = async () => {
+    setSaving(true);
     setFailed(null);
 
-    const rejected: string[] = [];
-    const good: File[] = [];
+    const added: StudioPhoto[] = [];
+    let firstProblem: string | null = null;
 
-    for (const file of Array.from(files)) {
-      const problem = checkImage(file);
-      if (problem) rejected.push(`${file.name}: ${problem}`);
-      else good.push(file);
-    }
+    await inBatches(staged, UPLOADS_AT_ONCE, async (item) => {
+      try {
+        const { key } = await uploadImage(
+          item.file,
+          "RESTAURANT_PHOTO",
+          restaurantId,
+        );
+        const size = await imageSize(item.file);
+        added.push(await addStudioPhoto(restaurantId, { key, ...size }));
+      } catch (error) {
+        firstProblem ??= toFormError(error).message;
+      }
+    });
 
-    const allowed = good.slice(0, Math.max(0, room));
-    if (good.length > allowed.length) {
-      rejected.push(
-        `Only ${max} photos are allowed, so ${good.length - allowed.length} were skipped.`,
-      );
-    }
-
-    if (rejected.length > 0) setFailed(rejected.join(" "));
-    if (allowed.length === 0) return;
-
-    const queued: Pending[] = allowed.map((file, index) => ({
-      id: `${Date.now()}-${index}-${file.name}`,
-      preview: URL.createObjectURL(file),
-      file,
-    }));
-
-    setPending((list) => [...list, ...queued]);
-    void inBatches(queued, UPLOADS_AT_ONCE, send);
-  }
+    setPhotos((list) => [...list, ...added]);
+    setStaged([]);
+    setFailed(firstProblem);
+    setSaving(false);
+    void refreshRestaurant(slug);
+    router.refresh();
+  };
 
   const act = async (id: string, work: () => Promise<StudioPhotos>) => {
     setBusy(id);
@@ -193,20 +138,6 @@ export function StudioPhotosPanel({
     move(dragging, to - from);
   };
 
-  const retry = (item: Pending) => {
-    setPending((list) =>
-      list.map((one) =>
-        one.id === item.id ? { ...one, error: undefined } : one,
-      ),
-    );
-    void send({ ...item, error: undefined });
-  };
-
-  const discard = (item: Pending) => {
-    URL.revokeObjectURL(item.preview);
-    setPending((list) => list.filter((one) => one.id !== item.id));
-  };
-
   return (
     <section className="border-foreground/15 bg-card overflow-hidden rounded-2xl border">
       <div className="flex flex-wrap items-center gap-3.5 p-4 sm:p-5">
@@ -219,35 +150,18 @@ export function StudioPhotosPanel({
           <p className="text-muted-foreground mt-0.5 text-sm">
             {photos.length === 0
               ? "None yet. The first one becomes your cover."
-              : `${photos.length} of ${max}. The cover is what people see on every card.`}
+              : unlimited
+                ? `${photos.length}. The cover is what people see on every card.`
+                : `${photos.length} of ${max}. The cover is what people see on every card.`}
           </p>
+          {initial.fromGuests > 0 ? (
+            <p className="text-muted-foreground mt-0.5 text-sm">
+              {initial.fromGuests} more from guests are on your page. Those are
+              theirs, not yours to edit.
+            </p>
+          ) : null}
         </div>
 
-        <input
-          ref={input}
-          type="file"
-          accept={IMAGE_ACCEPT}
-          multiple
-          className="sr-only"
-          onChange={(event) => {
-            // Copy the files out before resetting the input. `event.target.files`
-            // is the input's own live FileList, so clearing the value empties
-            // the very list we were about to read.
-            const files = Array.from(event.target.files ?? []);
-            event.target.value = "";
-            if (files.length > 0) take(files);
-          }}
-        />
-
-        <Button
-          type="button"
-          disabled={locked || room <= 0}
-          onClick={() => input.current?.click()}
-          className="bg-brand-ink text-brand-ink-foreground hover:bg-brand-ink/90 h-10 shrink-0 rounded-xl px-4 font-semibold"
-        >
-          <ImagePlus className="size-4" />
-          Add photos
-        </Button>
       </div>
 
       {failed ? (
@@ -271,28 +185,20 @@ export function StudioPhotosPanel({
           event.preventDefault();
           setDropping(false);
           const dropped = Array.from(event.dataTransfer.files);
-          if (dropped.length > 0) take(dropped);
+          if (dropped.length === 0) return;
+          const { staged: next, rejected } = stagePhotos(dropped, room);
+          setFailed(rejected.length > 0 ? rejected.join(" ") : null);
+          if (next.length > 0) setStaged((list) => [...list, ...next]);
         }}
         className={cn(
           "border-foreground/15 border-t p-4 transition-colors sm:p-5",
           dropping && "bg-tint-gold/40",
         )}
       >
-        {photos.length === 0 && pending.length === 0 ? (
-          <button
-            type="button"
-            disabled={locked}
-            onClick={() => input.current?.click()}
-            className="border-border/70 hover:border-foreground/30 flex w-full flex-col items-center rounded-2xl border border-dashed px-6 py-12 text-center transition-colors disabled:opacity-60"
-          >
-            <ImagePlus className="text-muted-foreground size-7" />
-            <span className="mt-3 text-sm font-semibold">
-              Drag photos here, or click to choose
-            </span>
-            <span className="text-muted-foreground mt-1 text-sm">
-              JPEG, PNG, WebP or AVIF, up to {MAX_IMAGE_LABEL} each
-            </span>
-          </button>
+        {photos.length === 0 ? (
+          <p className="border-border/70 text-muted-foreground rounded-2xl border border-dashed px-6 py-10 text-center text-sm">
+            No photos yet. Choose some below, then save.
+          </p>
         ) : (
           <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
             {photos.map((photo, index) => (
@@ -424,50 +330,34 @@ export function StudioPhotosPanel({
               </li>
             ))}
 
-            {pending.map((item) => (
-              <li
-                key={item.id}
-                className="bg-muted relative aspect-4/3 overflow-hidden rounded-xl"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={item.preview}
-                  alt=""
-                  className="size-full object-cover opacity-50"
-                />
-
-                {item.error ? (
-                  <div className="absolute inset-0 grid place-content-center gap-2 bg-black/75 p-3 text-center">
-                    <p className="text-[11px] leading-snug text-white">
-                      {item.error}
-                    </p>
-                    <div className="flex justify-center gap-2">
-                      <button
-                        type="button"
-                        onClick={() => retry(item)}
-                        className="inline-flex items-center gap-1 rounded-lg bg-white/20 px-2.5 py-1 text-xs font-semibold text-white"
-                      >
-                        <RotateCcw className="size-3" />
-                        Retry
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => discard(item)}
-                        aria-label="Discard this upload"
-                        className="rounded-lg bg-white/20 px-2 py-1 text-white"
-                      >
-                        <X className="size-3.5" />
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <span className="absolute inset-0 grid place-items-center bg-black/30">
-                    <Loader2 className="size-5 animate-spin text-white" />
-                  </span>
-                )}
-              </li>
-            ))}
           </ul>
+        )}
+
+        {locked ? null : (
+          <div className="border-foreground/10 mt-5 border-t pt-5">
+            <PhotoStage
+              photos={staged}
+              onChange={setStaged}
+              room={room + staged.length}
+              busy={saving}
+              onProblem={setFailed}
+              label="Add photos"
+            />
+
+            {staged.length > 0 ? (
+              <Button
+                type="button"
+                disabled={saving}
+                onClick={() => void save()}
+                className="bg-brand-ink text-brand-ink-foreground hover:bg-brand-ink/90 mt-3 h-10 rounded-xl px-4 font-semibold"
+              >
+                {saving ? <Loader2 className="size-4 animate-spin" /> : null}
+                {saving
+                  ? "Saving"
+                  : `Save ${staged.length} photo${staged.length === 1 ? "" : "s"}`}
+              </Button>
+            ) : null}
+          </div>
         )}
 
         <ImageViewer

@@ -5,6 +5,7 @@ import { ProfileTabs } from "@/components/profile/profile-tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getPublicProfile } from "@/lib/api/profile";
 import { siteConfig } from "@/lib/site-config";
+import { formatMiami } from "@/lib/miami-time";
 
 type PageProps = {
   params: Promise<{ username: string }>;
@@ -21,11 +22,7 @@ const initials = (name: string) =>
     .join("");
 
 const joined = (iso: string) =>
-  new Intl.DateTimeFormat("en-US", {
-    month: "long",
-    year: "numeric",
-    timeZone: "America/New_York",
-  }).format(new Date(iso));
+  formatMiami(iso, { month: "long", year: "numeric" });
 
 export async function generateMetadata({
   params,

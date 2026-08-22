@@ -63,8 +63,16 @@ export async function updateRestaurant(
   return data;
 }
 
-export async function deleteRestaurant(id: string): Promise<void> {
-  await apiFetch(`/restaurants/admin/${id}`, {
+/**
+ * Refused with a 409 when the restaurant has a running subscription, so the
+ * admin is told what deleting would end before it happens. `force` is the
+ * second, deliberate press.
+ */
+export async function deleteRestaurant(
+  id: string,
+  force = false,
+): Promise<void> {
+  await apiFetch(`/restaurants/admin/${id}${force ? "?force=true" : ""}`, {
     method: "DELETE",
     session: true,
   });

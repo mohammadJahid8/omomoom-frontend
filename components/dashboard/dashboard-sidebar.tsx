@@ -32,14 +32,7 @@ import {
 import { dashboardNav, isActive } from "@/lib/dashboard-nav";
 import { siteConfig } from "@/lib/site-config";
 import type { SessionUser } from "@/types/auth";
-
-function initials(name: string) {
-  return name
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase() ?? "")
-    .join("");
-}
+import { initials } from "@/lib/miami-time";
 
 export function DashboardSidebar({ user }: { user: SessionUser }) {
   const pathname = usePathname();

@@ -11,6 +11,7 @@ import { toFormError } from "@/lib/api/auth";
 import { startSubscription } from "@/lib/api/subscriptions";
 import { OWNER_CONTROLS } from "@/lib/claim";
 import type { Subscription } from "@/types/subscription";
+import { formatMiami } from "@/lib/miami-time";
 
 const money = (cents: number, currency: string) =>
   new Intl.NumberFormat("en-US", {
@@ -20,14 +21,7 @@ const money = (cents: number, currency: string) =>
   }).format(cents / 100);
 
 const renews = (iso: string | null) =>
-  iso
-    ? new Intl.DateTimeFormat("en-US", {
-        month: "long",
-        day: "numeric",
-        year: "numeric",
-        timeZone: "America/New_York",
-      }).format(new Date(iso))
-    : null;
+  iso ? formatMiami(iso, { month: "long", day: "numeric", year: "numeric" }) : null;
 
 export function SubscribePanel({
   subscription,
@@ -118,7 +112,12 @@ export function SubscribePanel({
           start(async () => {
             setFailed(null);
             try {
-              await startSubscription(subscription.id);
+              const { checkoutUrl } = await startSubscription(subscription.id);
+              // Stripe takes the card on its own page; nothing to refresh yet.
+              if (checkoutUrl) {
+                window.location.assign(checkoutUrl);
+                return;
+              }
               router.refresh();
             } catch (cause) {
               setFailed(toFormError(cause).message);

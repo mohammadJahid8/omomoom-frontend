@@ -11,15 +11,19 @@ import {
   UserRound,
 } from "lucide-react";
 
+import { ActivityFeed } from "@/components/dashboard/activity-feed";
 import {
-  NotBuiltYet,
   Panel,
   PanelTitle,
   StatCard,
 } from "@/components/dashboard/primitives";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { getMyStats } from "@/lib/auth/contributions";
+import {
+  getMyPhotos,
+  getMyRecommendations,
+  getMyStats,
+} from "@/lib/auth/contributions";
 import { requireSession } from "@/lib/auth/session";
 import { isAdmin, isOwner } from "@/types/auth";
 
@@ -61,9 +65,11 @@ function greeting() {
 }
 
 export default async function DashboardPage() {
-  const [user, stats] = await Promise.all([
+  const [user, stats, reviews, photos] = await Promise.all([
     requireSession("/dashboard"),
     getMyStats(),
+    getMyRecommendations(),
+    getMyPhotos(),
   ]);
 
   const audience = isAdmin(user)
@@ -197,15 +203,7 @@ export default async function DashboardPage() {
       </div>
 
       <div className="mt-4">
-        <NotBuiltYet
-          title="Your activity feed lands with contributions"
-          body="Reviews, photos and saved places all write to your profile automatically once those features ship. The counters above are wired to the same source, so they fill in on their own."
-          bullets={[
-            "Save a restaurant, and it appears under Want to try",
-            "Review a place, and it moves to Places tried",
-            "Upload a photo, and it is credited to your username",
-          ]}
-        />
+        <ActivityFeed reviews={reviews} photos={photos.photos} />
       </div>
     </>
   );

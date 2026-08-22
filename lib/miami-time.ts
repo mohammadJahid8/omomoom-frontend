@@ -56,3 +56,23 @@ export function fromMiamiInput(value: string): string | null {
 
   return new Date(instant).toISOString();
 }
+
+/** "Md Jahid" -> "MJ". Used wherever an avatar has no photo to show. */
+export function initials(name: string): string {
+  return name
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase() ?? "")
+    .join("");
+}
+
+/** A date as Miami reads it, so nobody sees yesterday because of their clock. */
+export function formatMiami(
+  iso: string,
+  options: Intl.DateTimeFormatOptions = { month: "short", day: "numeric" },
+): string {
+  return new Intl.DateTimeFormat("en-US", {
+    ...options,
+    timeZone: MIAMI_TZ,
+  }).format(new Date(iso));
+}

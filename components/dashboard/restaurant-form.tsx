@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { Loader2 } from "lucide-react";
 
 import {
@@ -10,8 +10,11 @@ import {
   TextareaField,
 } from "@/components/shared/field";
 import { Button } from "@/components/ui/button";
+import { PhotoStage, type StagedPhoto } from "@/components/dashboard/photo-stage";
 import { toFormError, type FormError } from "@/lib/api/auth";
 import { createRestaurant, updateRestaurant } from "@/lib/api/admin";
+import { addStudioPhoto } from "@/lib/api/studio";
+import { imageSize, inBatches, uploadImage } from "@/lib/api/uploads";
 import type { AdminRestaurant, AdminRestaurantInput } from "@/types/admin";
 
 const STATUS = [
@@ -47,6 +50,9 @@ export function RestaurantForm({
   onDone: () => void;
   onCancel: () => void;
 }) {
+  const [staged, setStaged] = useState<StagedPhoto[]>([]);
+  const [problem, setProblem] = useState<string | null>(null);
+
   const [error, submit, pending] = useActionState<FormError | null, FormData>(
     async (_previous, formData) => {
       const input: AdminRestaurantInput = {
@@ -68,8 +74,24 @@ export function RestaurantForm({
       } as AdminRestaurantInput;
 
       try {
-        if (restaurant) await updateRestaurant(restaurant.id, input);
-        else await createRestaurant(input);
+        const saved = restaurant
+          ? await updateRestaurant(restaurant.id, input)
+          : await createRestaurant(input);
+
+        // After the restaurant exists, never before: a new listing has no id
+        // to hang a photo on until this point.
+        if (staged.length > 0) {
+          await inBatches(staged, 3, async (item) => {
+            const { key } = await uploadImage(
+              item.file,
+              "RESTAURANT_PHOTO",
+              saved.id,
+            );
+            const size = await imageSize(item.file);
+            await addStudioPhoto(saved.id, { key, ...size });
+          });
+        }
+
         onDone();
         return null;
       } catch (cause) {
@@ -221,6 +243,25 @@ export function RestaurantForm({
         hint="Shown exactly as written."
         error={error?.fields.hoursText}
       />
+
+      <div className="border-foreground/10 border-t pt-5">
+        <PhotoStage
+          photos={staged}
+          onChange={setStaged}
+          disabled={pending}
+          busy={pending && staged.length > 0}
+          onProblem={setProblem}
+          label={restaurant ? "Add more photos" : "Photos"}
+        />
+        <p className="text-muted-foreground mt-2 text-xs">
+          Chosen now, uploaded when you save.
+        </p>
+        {problem ? (
+          <p role="alert" className="text-destructive mt-2 text-xs">
+            {problem}
+          </p>
+        ) : null}
+      </div>
 
       <div className="flex flex-wrap gap-3">
         <Button

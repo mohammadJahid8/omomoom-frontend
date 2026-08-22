@@ -1,6 +1,7 @@
 import {
   BookOpen,
   CalendarDays,
+  CreditCard,
   Camera,
   Compass,
   Flag,
@@ -70,6 +71,11 @@ export function dashboardNav(user: SessionUser): DashboardNavGroup[] {
           href: "/dashboard/restaurant",
           icon: Store,
           exact: true,
+        },
+        {
+          label: "Subscription",
+          href: "/dashboard/restaurant/subscription",
+          icon: CreditCard,
         },
       ],
     });

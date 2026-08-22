@@ -9,13 +9,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { deleteEvent, listAdminEvents } from "@/lib/api/events";
 import type { AdminEvent } from "@/types/event";
+import { formatMiami } from "@/lib/miami-time";
 
-const TZ = "America/New_York";
-
-const format = (iso: string, options: Intl.DateTimeFormatOptions) =>
-  new Intl.DateTimeFormat("en-US", { ...options, timeZone: TZ }).format(
-    new Date(iso),
-  );
+const format = formatMiami;
 
 function occurs(event: AdminEvent): string {
   const start = format(event.startsAt, {

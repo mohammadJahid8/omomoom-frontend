@@ -44,6 +44,7 @@ export async function getStudioPhotosFor(
     (await readStudio<StudioPhotos>(`/studio/${restaurantId}/photos`)) ?? {
       photos: [],
       max: 24,
+      fromGuests: 0,
     }
   );
 }

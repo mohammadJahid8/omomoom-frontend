@@ -11,14 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { toFormError, updateProfile, type FormError } from "@/lib/api/auth";
 import type { SessionUser } from "@/types/auth";
-
-function initials(name: string) {
-  return name
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase() ?? "")
-    .join("");
-}
+import { initials } from "@/lib/miami-time";
 
 export function WelcomeSetup({
   user,

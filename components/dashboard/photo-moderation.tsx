@@ -13,6 +13,7 @@ import { decidePhoto, listPhotoQueue } from "@/lib/api/photos";
 import { cn } from "@/lib/utils";
 import type { ApiMeta } from "@/types/api";
 import type { PhotoStatus, QueuePhoto } from "@/types/photo";
+import { formatMiami } from "@/lib/miami-time";
 
 const TABS: { value: PhotoStatus; label: string }[] = [
   { value: "PENDING", label: "Waiting" },
@@ -20,12 +21,7 @@ const TABS: { value: PhotoStatus; label: string }[] = [
   { value: "REJECTED", label: "Rejected" },
 ];
 
-const day = (iso: string) =>
-  new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    timeZone: "America/New_York",
-  }).format(new Date(iso));
+const day = (iso: string) => formatMiami(iso);
 
 export function PhotoModeration() {
   const [status, setStatus] = useState<PhotoStatus>("PENDING");

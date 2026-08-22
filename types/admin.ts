@@ -1,5 +1,6 @@
 import type { Role } from "@/types/auth";
 import type { MichelinRating, PriceTier } from "@/types/api";
+import type { SubscriptionStatus } from "@/types/subscription";
 
 export type RestaurantStatus = "DRAFT" | "PUBLISHED" | "HIDDEN";
 
@@ -14,6 +15,8 @@ export type AdminRestaurantRow = {
   michelin: MichelinRating | null;
   ratingAverage: number;
   reviewCount: number;
+  subscriptionStatus: SubscriptionStatus;
+  subscribedUntil: string | null;
   neighborhood: { id: string; name: string } | null;
   coverPhoto: { url: string } | null;
   updatedAt: string;

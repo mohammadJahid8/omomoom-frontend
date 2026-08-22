@@ -1,6 +1,6 @@
-@import "tailwindcss";
-@import "tw-animate-css";
-@import "shadcn/tailwind.css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -110,7 +110,8 @@
   --radius-3xl: calc(var(--radius) * 3);
 
   /* Shadows, soft and warm, never grey-black */
-  --shadow-card: 0 1px 2px rgb(28 22 16 / 0.04), 0 4px 16px rgb(28 22 16 / 0.05);
+  --shadow-card:
+    0 1px 2px rgb(28 22 16 / 0.04), 0 4px 16px rgb(28 22 16 / 0.05);
   --shadow-card-hover:
     0 2px 4px rgb(28 22 16 / 0.05), 0 12px 32px rgb(28 22 16 / 0.09);
   --shadow-header: 0 1px 0 var(--border);
@@ -341,12 +342,6 @@
     transition-duration: 0.01ms !important;
   }
 
-  /*
-   * Spinners and skeletons are status, not decoration. Reduced motion asks us
-   * to stop moving things around; it does not ask us to stop telling people
-   * the app is working. A frozen spinner reads as a hang, which is worse for
-   * everyone than a small rotation. Slowed down rather than switched off.
-   */
   .animate-spin {
     animation: var(--animate-spin, spin 1s linear infinite) !important;
     animation-duration: 1.6s !important;
@@ -354,7 +349,10 @@
   }
 
   .animate-pulse {
-    animation: var(--animate-pulse, pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite) !important;
+    animation: var(
+      --animate-pulse,
+      pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite
+    ) !important;
     animation-duration: 3s !important;
     animation-iteration-count: infinite !important;
   }
@@ -402,23 +400,6 @@
   }
 }
 
-/* --------------------------------------------------------------------------
-   Sheet motion
-   --------------------------------------------------------------------------
-   Dedicated keyframes for the filter drawer, rather than tw-animate-css's
-   generic `enter`/`exit`.
-
-   Those two animate `filter: blur()` and read every value out of CSS custom
-   properties. Chromium can composite neither, so the whole slide runs on the
-   main thread, in the same frames React is mounting the drawer's contents and
-   Radix is installing its focus trap and scroll lock. Measured, that produced
-   seven painted frames across a 450ms animation, which is why it read as a pop
-   rather than a slide.
-
-   These animate one property, transform, between two literal values. That is
-   the shape Chromium hands to the compositor, so the movement keeps a steady
-   frame rate no matter how busy the main thread is.
--------------------------------------------------------------------------- */
 @keyframes sheet-in-right {
   from {
     transform: translate3d(100%, 0, 0);

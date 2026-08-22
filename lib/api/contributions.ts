@@ -1,9 +1,7 @@
 import { apiFetch } from "@/lib/api/client";
 import type {
-  ContributionStats,
   Recommendation,
   RecommendationWithRestaurant,
-  SavedRestaurant,
 } from "@/types/contribution";
 
 export async function savedRestaurantIds(
@@ -26,13 +24,6 @@ export async function saveRestaurant(restaurantId: string): Promise<void> {
 
 export async function unsaveRestaurant(restaurantId: string): Promise<void> {
   await apiFetch(`/saves/${restaurantId}`, { method: "DELETE", session: true });
-}
-
-export async function mySavedRestaurants(): Promise<SavedRestaurant[]> {
-  const { data } = await apiFetch<SavedRestaurant[]>("/saves", {
-    session: true,
-  });
-  return data;
 }
 
 export type RecommendationInput = {
@@ -81,41 +72,28 @@ export async function getRecommendations(
   }
 }
 
-export async function getRecentRecommendations(
-  limit = 6,
-): Promise<RecommendationWithRestaurant[]> {
-  try {
-    const { data } = await apiFetch<RecommendationWithRestaurant[]>(
-      `/recommendations/recent?limit=${limit}`,
-      { revalidate: 60, tags: ["recommendations"] },
-    );
-    return data;
-  } catch {
-    return [];
-  }
-}
-
-export async function myRecommendations(): Promise<
-  RecommendationWithRestaurant[]
-> {
-  const { data } = await apiFetch<RecommendationWithRestaurant[]>(
-    "/recommendations/mine",
-    { session: true },
-  );
-  return data;
-}
-
-export async function myContributionStats(): Promise<ContributionStats> {
-  const { data } = await apiFetch<ContributionStats>(
-    "/recommendations/mine/stats",
-    { session: true },
-  );
-  return data;
-}
-
 export async function deleteRecommendation(id: string): Promise<void> {
   await apiFetch(`/recommendations/${id}`, {
     method: "DELETE",
     session: true,
   });
+}
+
+/** The newest recommendations across the site, optionally narrowed to a cuisine. */
+export async function getRecentRecommendations(
+  limit = 6,
+  cuisine?: string[],
+): Promise<RecommendationWithRestaurant[]> {
+  const params = new URLSearchParams({ limit: String(limit) });
+  for (const slug of cuisine ?? []) params.append("cuisine", slug);
+
+  try {
+    const { data } = await apiFetch<RecommendationWithRestaurant[]>(
+      `/recommendations/recent?${params.toString()}`,
+      { revalidate: 120, tags: ["recommendations"] },
+    );
+    return data;
+  } catch {
+    return [];
+  }
 }

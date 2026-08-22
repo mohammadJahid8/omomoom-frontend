@@ -21,6 +21,7 @@ import type { AdminUser } from "@/types/admin";
 import type { ApiMeta } from "@/types/api";
 import type { Role } from "@/types/auth";
 import { cn } from "@/lib/utils";
+import { initials } from "@/lib/miami-time";
 
 const ROLE_FILTER = [
   { value: "ALL", label: "All roles" },
@@ -46,14 +47,6 @@ const ROLE_LABEL: Record<Role, string> = {
   ADMIN: "Admin",
   SUPER_ADMIN: "Super admin",
 };
-
-function initials(name: string) {
-  return name
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase() ?? "")
-    .join("");
-}
 
 export function UsersManager() {
   const { user: me } = useSession();

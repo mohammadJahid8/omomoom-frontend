@@ -9,6 +9,7 @@ import { EditorsPicks } from "@/components/asian-eats/editors-picks";
 import { pickTrendingDishes } from "@/components/asian-eats/trending-dishes";
 import { RestaurantCard } from "@/components/restaurant/restaurant-card";
 import { Button } from "@/components/ui/button";
+import { getRecentRecommendations } from "@/lib/api/contributions";
 import { getUpcomingEvents } from "@/lib/api/events";
 import { getRestaurants } from "@/lib/api/restaurants";
 import {
@@ -48,7 +49,7 @@ function activeCuisine(raw: string | string[] | undefined): string | null {
 export default async function AsianEatsPage({ searchParams }: PageProps) {
   const selected = activeCuisine((await searchParams).cuisine);
 
-  const [featuredResult, discoverResult, events] = await Promise.all([
+  const [featuredResult, discoverResult, events, saying] = await Promise.all([
     getRestaurants(
       { cuisine: ASIAN_CUISINE_SLUGS, sortBy: "featured" },
       { limit: 40, facets: false },
@@ -58,6 +59,7 @@ export default async function AsianEatsPage({ searchParams }: PageProps) {
       { limit: 12 },
     ),
     getUpcomingEvents(3),
+    getRecentRecommendations(8, ASIAN_CUISINE_SLUGS),
   ]);
 
   const picks = pickTrendingDishes(featuredResult.restaurants, 6);
@@ -179,7 +181,7 @@ export default async function AsianEatsPage({ searchParams }: PageProps) {
             </div>
 
             <aside className="order-3 lg:sticky lg:top-24 lg:order-2 lg:self-start">
-              <CommunityRail events={events} />
+              <CommunityRail events={events} recommendations={saying} />
             </aside>
 
             <div className="order-2 min-w-0 lg:order-3">

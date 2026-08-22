@@ -11,10 +11,7 @@ import type { RestaurantPhoto } from "@/types/api";
 /** How far the edges fade out when there is more of the strip in that direction. */
 const FADE = "2.5rem";
 
-/**
- * Masking rather than overlaying a coloured gradient: the photos themselves
- * fade, so it works on any background without matching a colour to it.
- */
+/** A mask, not a coloured overlay, so it works on any background. */
 function edgeMask(left: boolean, right: boolean): string | undefined {
   if (!left && !right) return undefined;
 
@@ -24,11 +21,7 @@ function edgeMask(left: boolean, right: boolean): string | undefined {
   ].join(", ")})`;
 }
 
-/**
- * The strip under the hero. It shows everything except the photo already on
- * display above, while the viewer it opens still walks the full set, so the
- * cover is never missing from the sequence.
- */
+/** Shows everything but the cover; the viewer it opens still walks the full set. */
 export function RestaurantGallery({
   name,
   photos,

@@ -69,4 +69,9 @@ export type StudioPhoto = {
   isCover: boolean;
 };
 
-export type StudioPhotos = { photos: StudioPhoto[]; max: number };
+export type StudioPhotos = {
+  photos: StudioPhoto[];
+  max: number;
+  /** Approved guest photos on the same page, which the owner cannot edit. */
+  fromGuests: number;
+};

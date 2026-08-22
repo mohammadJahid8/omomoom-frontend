@@ -10,14 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { updateProfile } from "@/lib/api/auth";
 import { checkImage, IMAGE_ACCEPT, uploadImage } from "@/lib/api/uploads";
 import type { SessionUser } from "@/types/auth";
-
-function initials(name: string) {
-  return name
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase() ?? "")
-    .join("");
-}
+import { initials } from "@/lib/miami-time";
 
 export function AvatarUpload({ user }: { user: SessionUser }) {
   const router = useRouter();

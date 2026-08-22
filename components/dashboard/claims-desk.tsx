@@ -24,13 +24,9 @@ import {
 import { cn } from "@/lib/utils";
 import type { AdminClaim, ClaimCounts } from "@/types/admin";
 import type { ApiMeta } from "@/types/api";
+import { formatMiami } from "@/lib/miami-time";
 
-const day = (iso: string) =>
-  new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    timeZone: "America/New_York",
-  }).format(new Date(iso));
+const day = (iso: string) => formatMiami(iso);
 
 const hostOf = (url: string | null) => {
   if (!url) return null;

@@ -1,15 +1,11 @@
 import Link from "next/link";
 import { CalendarDays, ExternalLink, MapPin, Quote } from "lucide-react";
 
-import { COMMUNITY_POSTS } from "@/lib/mock/asian-eats";
+import type { RecommendationWithRestaurant } from "@/types/contribution";
 import type { CommunityEvent } from "@/types/event";
+import { formatMiami } from "@/lib/miami-time";
 
-const TZ = "America/New_York";
-
-const part = (iso: string, options: Intl.DateTimeFormatOptions) =>
-  new Intl.DateTimeFormat("en-US", { ...options, timeZone: TZ }).format(
-    new Date(iso),
-  );
+const part = formatMiami;
 
 function when(event: CommunityEvent): string {
   const day = part(event.startsAt, {
@@ -45,8 +41,18 @@ function time(event: CommunityEvent): string | null {
     : null;
 }
 
-export function CommunityRail({ events }: { events: CommunityEvent[] }) {
-  const posts = COMMUNITY_POSTS.slice(0, 2);
+export function CommunityRail({
+  events,
+  recommendations,
+}: {
+  events: CommunityEvent[];
+  recommendations: RecommendationWithRestaurant[];
+}) {
+  // Only the ones where somebody actually wrote something. A five-star rating
+  // with no words is a fine review and a terrible pull quote.
+  const posts = recommendations
+    .filter((item) => item.comment?.trim())
+    .slice(0, 2);
 
   return (
     <div className="space-y-9">
@@ -131,40 +137,50 @@ export function CommunityRail({ events }: { events: CommunityEvent[] }) {
         </ol>
       </section>
 
-      <section>
-        <h3 className="font-heading text-xl font-extrabold">
-          People are saying
-        </h3>
+      {posts.length > 0 ? (
+        <section>
+          <h3 className="font-heading text-xl font-extrabold">
+            People are saying
+          </h3>
 
-        <ol className="mt-4 space-y-3">
-          {posts.map((post) => (
-            <li
-              key={post.id}
-              className="border-foreground/15 bg-surface rounded-2xl border p-5"
-            >
-              <Quote
-                className="text-brand/50 size-5 rotate-180"
-                aria-hidden="true"
-              />
-              <blockquote className="mt-2 text-sm leading-relaxed">
-                {post.quote}
-              </blockquote>
-              <p className="text-muted-foreground mt-3.5 text-sm">
-                <span className="text-foreground font-semibold">
-                  @{post.authorHandle}
-                </span>{" "}
-                on{" "}
-                <Link
-                  href={`/restaurants/${post.restaurantSlug}`}
-                  className="text-brand-ink font-semibold underline-offset-4 hover:underline"
-                >
-                  {post.restaurantName}
-                </Link>
-              </p>
-            </li>
-          ))}
-        </ol>
-      </section>
+          <ol className="mt-4 space-y-3">
+            {posts.map((post) => (
+              <li
+                key={post.id}
+                className="border-foreground/15 bg-surface rounded-2xl border p-5"
+              >
+                <Quote
+                  className="text-brand/50 size-5 rotate-180"
+                  aria-hidden="true"
+                />
+                <blockquote className="mt-2 text-sm leading-relaxed">
+                  {post.comment}
+                </blockquote>
+
+                <p className="text-muted-foreground mt-3.5 text-sm">
+                  <Link
+                    href={`/u/${post.user.username}`}
+                    className="text-foreground font-semibold underline-offset-4 hover:underline"
+                  >
+                    @{post.user.username}
+                  </Link>{" "}
+                  on the{" "}
+                  <span className="text-foreground font-semibold">
+                    {post.dish}
+                  </span>{" "}
+                  at{" "}
+                  <Link
+                    href={`/restaurants/${post.restaurant.slug}`}
+                    className="text-brand-ink font-semibold underline-offset-4 hover:underline"
+                  >
+                    {post.restaurant.name}
+                  </Link>
+                </p>
+              </li>
+            ))}
+          </ol>
+        </section>
+      ) : null}
     </div>
   );
 }

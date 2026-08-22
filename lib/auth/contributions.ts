@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 
 import { API_BASE_URL } from "@/lib/api/client";
 import type { ApiResponse } from "@/types/api";
+import type { MyPhoto } from "@/types/photo";
 import type {
   ContributionStats,
   RecommendationWithRestaurant,
@@ -50,4 +51,8 @@ export const getMyRecommendations = cache(() =>
 
 export const getMySaves = cache(() =>
   asViewer<SavedRestaurant[]>("/saves", []),
+);
+
+export const getMyPhotos = cache(() =>
+  asViewer<{ photos: MyPhoto[] }>("/photos/mine", { photos: [] }),
 );
