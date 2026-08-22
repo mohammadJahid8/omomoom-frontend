@@ -59,6 +59,10 @@ export function ClaimVerify({
   const router = useRouter();
   const pathname = usePathname();
 
+  // What the API said when it issued the code, so the page can tell the truth
+  // about whether a real one was sent.
+  const [mocked, setMocked] = useState(false);
+
   const go = (next: ClaimStep) => router.push(stepHref(pathname, next));
 
   if (status === "loading") {
@@ -102,6 +106,7 @@ export function ClaimVerify({
     return (
       <CodeStep
         claim={claim}
+        mocked={mocked}
         onDone={() => go("done")}
         onBack={() => go("method")}
       />
@@ -112,7 +117,10 @@ export function ClaimVerify({
     <MethodStep
       claim={claim}
       options={options}
-      onCode={() => go("code")}
+      onCode={(wasMocked) => {
+        setMocked(wasMocked);
+        go("code");
+      }}
       onManual={() => go("manual")}
       onBack={() => go("details")}
     />
@@ -284,7 +292,7 @@ function MethodStep({
 }: {
   claim: Claim;
   options: VerificationOption[];
-  onCode: () => void;
+  onCode: (mocked: boolean) => void;
   onManual: () => void;
   onBack: () => void;
 }) {
@@ -301,8 +309,8 @@ function MethodStep({
     setFailed(null);
 
     try {
-      await sendClaimCode(claim.id, option.method);
-      onCode();
+      const { mocked } = await sendClaimCode(claim.id, option.method);
+      onCode(mocked);
     } catch (cause) {
       setFailed(toFormError(cause).message);
       setBusy(null);
@@ -398,10 +406,17 @@ function MethodStep({
 
 function CodeStep({
   claim,
+  mocked,
   onDone,
   onBack,
 }: {
   claim: Claim;
+  /**
+   * Straight from the API, never assumed. A hardcoded "use 000000" is a lie
+   * the moment a real provider is connected, and it hands someone a code that
+   * cannot work while insisting it will.
+   */
+  mocked: boolean;
   onDone: () => void;
   onBack: () => void;
 }) {
@@ -438,11 +453,13 @@ function CodeStep({
         </p>
       </div>
 
-      <p className="bg-tint-gold text-tint-gold-ink rounded-xl px-4 py-3 text-sm leading-relaxed">
-        <strong className="font-bold">Testing mode.</strong> No SMS provider is
-        connected yet, so nothing was sent. Use{" "}
-        <code className="font-mono font-bold">000000</code>.
-      </p>
+      {mocked ? (
+        <p className="bg-tint-gold text-tint-gold-ink rounded-xl px-4 py-3 text-sm leading-relaxed">
+          <strong className="font-bold">Testing mode.</strong> No SMS provider
+          is connected yet, so nothing was sent. Use{" "}
+          <code className="font-mono font-bold">000000</code>.
+        </p>
+      ) : null}
 
       {error && Object.keys(error.fields).length === 0 ? (
         <FormAlert>{error.message}</FormAlert>
